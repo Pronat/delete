@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
-import './App.css';
 
-
-function App() {
+export const LocalStorage = () => {
     const [value, setValue] = useState<number>(0)
 
     const incHandler = () => {
@@ -28,5 +26,3 @@ function App() {
         </div>
     );
 }
-
-export default App;
