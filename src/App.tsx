@@ -8,6 +8,7 @@ function App() {
     const incrementPlusOne = () => {
         setValue(value + 1)
     }
+    const setToLocalStorage
   return (
     <div className="App">
         <h1>{value}</h1>
