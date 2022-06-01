@@ -4,19 +4,26 @@ import './App.css';
 
 function App() {
     const [value, setValue] = useState<number>(0)
-    const addPlusOneIncrement = () => {
+    const incHandler = () => {
         setValue(value + 1)
+        setIncrementHandler()
     }
-    const setIncrement = () => {
+    const setIncrementHandler = () => {
         localStorage.setItem('keyValue', JSON.stringify(value))
 
     }
+    const getIncrementHandler = () => {
+        let val = localStorage.getItem('keyValue')
+        if (val) {
+        setValue(JSON.parse(val))
+    }}
         return (
         <div className="App">
 
             <h1>{value}</h1>
-            <button onClick={addPlusOneIncrement}>inc</button>
-            <button onClick={setIncrement}>setInc</button>
+            <button onClick={incHandler}>inc</button>
+            <button onClick={setIncrementHandler}>setInc</button>
+            <button onClick={getIncrementHandler}>getInc</button>
 
         </div>
     );
