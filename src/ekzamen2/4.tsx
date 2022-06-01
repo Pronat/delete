@@ -1,5 +1,3 @@
-import React from 'react';
-
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -16,5 +14,5 @@ ReactDOM.render(
     <UsersList/>, document.getElementById('root')
 );
 // Что вернёт выражение: Array.isArray(users)?
-
+//ответ - true
 

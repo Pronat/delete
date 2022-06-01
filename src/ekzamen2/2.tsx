@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function UsersList() {
+export function UsersList() {
     const [users, setUsers] = useState<Array<string>>(["Bob", "Alex", "Ann"])
 
     return (
@@ -15,5 +15,5 @@ ReactDOM.render(
 );
 
 // Что вернёт выражение: typeof useState?
-
+// ответ - object
 

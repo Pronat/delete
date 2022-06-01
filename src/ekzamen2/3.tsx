@@ -1,5 +1,3 @@
-import React from 'react';
-
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -20,3 +18,4 @@ ReactDOM.render(
 );
 
 // Чему равно results.length?
+// отвер -   2
