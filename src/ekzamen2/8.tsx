@@ -21,4 +21,4 @@ ReactDOM.render(
     <UsersList/>, document.getElementById('root')
 );
 // Что вернёт выражение: Array.isArray(usersList)?
-
+// отвер - true

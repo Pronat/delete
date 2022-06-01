@@ -28,7 +28,7 @@ function UsersList() {
         {id: 4, userName: "John", age: 23},
     ]
 
-    const [usersList, setUsersList] = useState<Array<UserType>>()
+    const [usersList, setUsersList] = useState<Array<UserType>>([])
     return (
         <main>
             <h5>User list:</h5>
@@ -41,4 +41,4 @@ ReactDOM.render(
     <UsersList/>, document.getElementById('root')
 );
 // Что надо написать вместо XXX, чтобы код работал?
-
+// возможно ответ  -   []

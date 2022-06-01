@@ -19,3 +19,4 @@ ReactDOM.render(
     <UsersList/>, document.getElementById('root')
 );
 // Что надо вставить вместо ХХХ, чтобы код заработал?
+// отвер - map

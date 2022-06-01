@@ -13,4 +13,5 @@ ReactDOM.render(
     <UsersList/>, document.getElementById('root')
 );
 // Что вернёт выражение: typeof setUsers?
+// ответ - function
 
