@@ -8,7 +8,8 @@ function App() {
     useEffect(()=>{
         let val = localStorage.getItem('keyValue')
         if (val) {
-            setValue(JSON.parse(val))
+            let newVal = JSON.parse(val)
+            setValue(newVal)
         }}, [])
 
     useEffect(()=>{
