@@ -1,23 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, MouseEvent} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function UsersList() {
-    const [users, setUsers] = useState<Array<string>>(["Bob", "Alex", "Ann"])
-    const getUser = (user: string) => <li>{user}</li>
-
+function Button() {
+    const [tagName, setTagName] = useState<string>()
+    const onClickHandler = (e: MouseEvent<HTMLButtonElement>) => {
+        setTagName(e.xxx.tagName)
+    }
     return (
-        <main>
-            <h4>User list:</h4>
-            <ul>
-                {users.map(getUser)}
-            </ul>
-        </main>
+        <>
+            <p>{tagName}</p>
+            <button onClick={onClickHandler} >
+                <span>Click</span>
+            </button>
+        </>
     )
 }
 
 ReactDOM.render(
-    <UsersList/>, document.getElementById('root')
+    <Button/>, document.getElementById('root')
 );
-// Что вернёт выражение: typeof getUser?
-// отвер - function
+
+// Что надо написать вместо ххх, что бы на странице появился текст BUTTON?
+// currentTarget

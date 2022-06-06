@@ -1,24 +1,20 @@
-import React, {useState} from 'react';
+import React, {MouseEvent} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function UsersList() {
-    const [users, setUsers] = useState<Array<string>>(["Bob", "Alex", "Ann"])
-    const getUser = (user: string) => <li>{user}</li>
-    const usersList = users.map(getUser)
-
-    return (
-        <main>
-            <h4>User list:</h4>
-            <ul>
-                {usersList}
-            </ul>
-        </main>
-    )
+function Button() {
+    const onClickHandler = (e: MouseEvent<HTMLButtonElement>) => {
+        console.log((typeof e) === ххх)
+    }
+    return <button onClick={onClickHandler} >Click</button>
 }
 
+
 ReactDOM.render(
-    <UsersList/>, document.getElementById('root')
+    <Button/>, document.getElementById('root')
 );
-// Что вернёт выражение: Array.isArray(usersList)?
-// отвер - true
+
+// Какой тип данных представляет аргумент функции-обработчика?
+// Что надо написать вместо ххх, что бы в консоль вывело true?
+
+//

@@ -1,25 +1,29 @@
-import React, {useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function UsersList() {
-    const [users, setUsers] = useState<Array<string>>(["Bob", "Alex", "Ann"])
-    const getUser = (user: string) => <li>{user}</li>
-    // const usersList = users.map(XXX)
-
-    return (
-        <main>
-            <h4>User list:</h4>
-            <ul>
-                {/*{usersList}*/}
-            </ul>
-        </main>
-    )
+function Button() {
+    return <button
+        onClick={xxx}
+    >Click</button>
 }
 
-ReactDOM.render(
-    <UsersList/>, document.getElementById('root')
-);
-// Что надо вставить вместо XXX, чтобы код заработал?
 
-//getUser  - ответ
+ReactDOM.render(
+    <Button/>, document.getElementById('root')
+);
+
+
+
+
+
+// Что надо написать вместо ххх,
+// что бы на странице появился пустой alert при клике по кнопке?
+
+//()=>{alert('')}
+
+
+
+
+
+
