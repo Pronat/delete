@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {UsersList} from "./ekzamen2/2";
+import {Post} from "./ekzamen4/3";
 
 
 function App() {
@@ -12,9 +13,8 @@ function App() {
 
         return (
         <div className="App">
-            <button onClick={startHandler}>start</button>
-            {/*<h1>{value}</h1>*/}
-            {/*<button onClick={incHandler}>inc</button>*/}
+            <Post />
+            {/*<button onClick={startHandler}>start</button>*/}
 
         </div>
     );
