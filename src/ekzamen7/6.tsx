@@ -26,4 +26,4 @@ export const friends: FriendsType = {
 //Id студента является ключом к массиву его друзей.
 //Какое значение лежит тут: friends[students[0].id][3]?
 
-
+//undefined

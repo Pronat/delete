@@ -27,4 +27,4 @@ export const friends: Friends = {
 //Id студента является ключом к массиву его друзей.
 //Что вернёт выражение: Array.isArray(friends)?
 
-//скорее всего false
+//false

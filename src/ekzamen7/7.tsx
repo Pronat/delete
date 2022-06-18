@@ -59,3 +59,6 @@ export const updateCourseStatus = (samuraiID: string, name: CourseNameType, isDo
 // Так же дана функция updateCourseStatus,
 // которая позволяет отметить курс как пройденный самураем или снять такую отметку
 // Что надо написать вместо XXX, чтобы функция работала?
+
+
+//samuraiID
