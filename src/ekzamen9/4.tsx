@@ -20,4 +20,4 @@ export const calculator = (state: number, action: ActionType): number => {
 }
 
 //Что вернёт такой вызов функции: calculator(10, {type: "MULT", payload: 2})?
-//неверно  state
+//возможно  10
