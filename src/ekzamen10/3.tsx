@@ -2,20 +2,25 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function UsersList() {
-    const results = useState<Array<string>>(["Bob", "Alex", "Ann"])
-
-    const users = results[0]
-    const setUsers = results[1]
-
+function PasswordChecker() {
+    const [password, setPassword] = useState<string>("")
     return (
-        <p>Тут будет список пользователей</p>
+        <main>
+            <p>Your password must have more than 8 charters!</p>
+            <input
+                placeholder={"Enter your password"}
+                value={password}
+                onChange={e => setPassword(e.currentTarget.value)}
+                type={"password"}
+            />
+            {XXX < 9 && <p style={{color: "red"}}>The password is too short!</p>}
+        </main>
     )
 }
 
 ReactDOM.render(
-    <UsersList/>, document.getElementById('root')
+    <PasswordChecker/>, document.getElementById('root')
 );
 
-// Чему равно results.length?
-// отвер -   2
+// Что надо вставить вместо XXX, чтобы код работал нормально?
+// password.length

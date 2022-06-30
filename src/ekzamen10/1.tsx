@@ -1,23 +1,23 @@
-
-
-import React, {useState} from 'react';
+import React, {useState, MouseEvent} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function UsersList() {
-    const results = useState<Array<string>>(["Bob", "Alex", "Ann"])
-    const users = results[0]
-    const setUsers = results[1]
-
+function ColorButton() {
+    const [isColored, setIsColored] = useState<boolean>(false)
     return (
-        <p>Тут будет список пользователей</p>
+        <button
+            style={{ backgroundColor: `${ XXX === true ? "red": ""}`}}
+            onClick={()=>setIsColored(true)}
+        >
+            Меняю цвет по клику
+        </button>
     )
 }
 
+
 ReactDOM.render(
-    <UsersList/>, document.getElementById('root')
+    <ColorButton/>, document.getElementById('root')
 );
 
-// Какой тип правильнее указать вместо "any" при типизации стэйта?
-
-//Array<string>
+// Что надо написать вместо XXX, чтобы при клике кнопка становилась красной?
+// isColored

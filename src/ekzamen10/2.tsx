@@ -2,18 +2,27 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-export function UsersList() {
+function UsersList() {
     const [users, setUsers] = useState<Array<string>>(["Bob", "Alex", "Ann"])
+    const getUser = (user: string, i: number) => <li key={i}>{user}</li>
+
+    const usersList = (XXX === 0)
+        ? <p>List is empty</p>
+        :  <ul>
+            { users.map(getUser)}
+        </ul>
 
     return (
-        <p>Тут будет список пользователей!</p>
+        <main>
+            <button onClick={()=>setUsers([])}>Clear list</button>
+            <h4>User list:</h4>
+            {usersList}
+        </main>
     )
 }
 
 ReactDOM.render(
-    <UsersList />, document.getElementById('root')
+    <UsersList/>, document.getElementById('root')
 );
-
-// Что вернёт выражение: typeof useState?
-// ответ - object
-
+// Что надо вставить вместо XXX, чтобы код корректно работал  со списком пользователей?
+// неверно getUser

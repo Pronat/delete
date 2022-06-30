@@ -1,23 +1,30 @@
-import React, {useState} from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
 
-function UsersList() {
-    const [users, setUsers] = useState<Array<string>>(["Bob", "Alex", "Ann"])
-    const getUser = (user: string) => <li>{user}</li>
-
-    return (
-        <main>
-            <h4>User list:</h4>
-            <ul>
-                {users.map(getUser)}
-            </ul>
-        </main>
-    )
+type ActionType = {
+    type: "SUM"|"SUB"|"MULT"|"DIV"|"EXP"
+    payload: number
 }
 
-ReactDOM.render(
-    <UsersList/>, document.getElementById('root')
-);
-// Что вернёт выражение: typeof getUser?
-// отвер - function
+export const calculator = (state: number, action: ActionType): number => {
+    switch (action.type) {
+        case "SUM":
+            return state + action.payload
+        case "SUB":
+            return state - action.payload
+        case "DIV":
+            return state / action.payload
+        case "MULT":
+            return state * action.payload
+        case "EXP":
+            return state ** action.payload
+        default:
+            return state
+    }
+}
+const result = calculator(10, {XXX, payload: 0})
+if (!(result - 1)){
+    console.log("IT-INCUBATOR")
+}
+
+//Что надо написать вместо XXX чтобы в консоли появилась строка "IT-INCUBATOR"?
+
+//неверно type: "SUB"
