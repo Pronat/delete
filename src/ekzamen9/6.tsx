@@ -29,4 +29,4 @@ export const userReducer =
 //Какой код должен быть написан вместо XXX и YYY в типе //ChangeUserPasswordTypeAT, что бы редьюсер работал?
 //В ответе напишите через пробел: XXX  YYY
 
-// возможно id:number newPassword:string
+//id:number newPassword:string
