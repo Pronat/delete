@@ -23,3 +23,5 @@ const changeTrackAC = (url: string) => ({type: 'TRACK-URL-CHANGED', url})
 const changeTrackPlayStatusAC = (status: Status) => ({type: 'TRACK-STATUS-CHANGED', status})
 
 //Какой тип должен быть вместо XXX?
+
+//'TRACK-URL-CHANGED'
