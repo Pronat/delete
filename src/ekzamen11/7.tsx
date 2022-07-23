@@ -34,4 +34,4 @@ const rewindToStart = () => ({type: 'TRACK-REWOUND-TO-START'})
 // Какие типы должны быть вместо XXX, YYY и ZZZ?
 // Ответ дать через пробел, например:   'BLABLA' 'HEYНЕY' 'HIPHOP'
 
-//
+// 'TRACK-URL-CHANGED' 'TRACK-MUTED' 'TRACK-REWOUND-TO-START'
