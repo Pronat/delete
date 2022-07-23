@@ -3,7 +3,7 @@ export const reducer = (state: any, action: any) => {
         case 'TRACK-LIKED':
             return {
                 ...state,
-                [id]: {
+                [XXX]: {
                     ...state[XXX],
                     likesCount: state[XXX].likesCount + 1
                 }
@@ -26,3 +26,5 @@ const newState = reducer(state, likeTrackAC(14))
 console.log(newState[14].likesCount === 3)
 
 // Что нужно написать вместо XXX, чтобы в консоли увидеть true?
+
+// action.trackId
