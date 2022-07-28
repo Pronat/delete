@@ -33,4 +33,4 @@ console.log(newState.status === 'Paused')
 
 //Напишите вместо XXX правильный вызов правильного AC, чтобы в консоли было true
 
-//неправильно changeTrackPlayStatusAC
+//changeTrackPlayStatusAC('Paused')
