@@ -22,7 +22,7 @@ console.log(newState[3].likesCount === 0)
 // Что нужно написать вместо XXX, чтобы трек корректно добавился и в консоли увидеть true?
 
 
-// неправильно
+// возможно
 // {
 //                 ...state,
 //                 trackId: action.trackId

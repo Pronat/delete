@@ -33,4 +33,4 @@ console.log(newState.volume === 20)
 
 // Напишите вместо XXX правильную строку кода, чтобы изменить громкость трека и увидеть в консоли true.
 
-//неправильно volume: action.volume
+//возможно volume: action.volumeLevel
