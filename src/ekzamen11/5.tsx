@@ -23,7 +23,4 @@ console.log(newState[3].likesCount === 0)
 
 
 // возможно
-// {
-//                 ...state,
-//                 trackId: action.trackId
-//             }
+// {...state, trackId: action.trackId}
