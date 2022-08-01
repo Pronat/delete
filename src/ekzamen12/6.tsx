@@ -45,7 +45,7 @@ const StudentList = () => {
     const dispatch = useDispatch()
     const studentsList = students.map(s => {
         const removeStudent = () => {
-            XXX(YYY( ZZZ))
+            // XXX(YYY( ZZZ))
         }
         return (
             <li key={s.id}
@@ -74,4 +74,4 @@ ReactDOM.render(<div>
 // Что нужно написать вместо XXX, YYY и ZZZ, чтобы при клике по имени студент
 // удалялся из списка? Напишите через пробел.
 
-//
+//возможно  dispatch(RemoveStudentAC(s.id))

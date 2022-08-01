@@ -19,3 +19,4 @@ store.dispatch({type: 'ANY'})
 //Что нужно написать вместо XXX, чтобы получить актуальный стейт?
 
 //неправильно initialState
+//возможно store.dispatch

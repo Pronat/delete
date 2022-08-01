@@ -17,4 +17,4 @@ store.dispatch({type: 'ANY'})
 
 // Что нужно написать вместо XXX, чтобы в консоли увидеть 'state changed'?
 
-//наверное subscribe
+//наверное subscribe (или users)
