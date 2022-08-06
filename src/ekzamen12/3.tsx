@@ -31,13 +31,12 @@ const selector = (state: RootStateType) => state.users.items
 const Users = () => {
 
     // const users = XXX
-    const users = useSelector((state: RootStateType) => state.users)
+    const users = XXX
 
     return <ul>
         {users.map(u => <li key={u.id}>{u.name}</li>)}
     </ul>
 }
-
 
 ReactDOM.render(<div>
         <Provider store={store}>
