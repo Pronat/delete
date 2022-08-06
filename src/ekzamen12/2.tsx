@@ -20,3 +20,4 @@ store.dispatch({type: 'ANY'})
 
 //неправильно initialState
 //неправильно store.dispatch
+//

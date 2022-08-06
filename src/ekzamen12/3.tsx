@@ -30,12 +30,14 @@ const selector = (state: RootStateType) => state.users.items
 
 const Users = () => {
 
-    const users = XXX
+    // const users = XXX
+    const users = useSelector((state: RootStateType) => state.users)
 
     return <ul>
         {users.map(u => <li key={u.id}>{u.name}</li>)}
     </ul>
 }
+
 
 ReactDOM.render(<div>
         <Provider store={store}>
@@ -49,3 +51,4 @@ ReactDOM.render(<div>
 // ❗ Ответ дать минимально возможным объёмом кода
 
 //неправильно selector
+// возможно useSelector((state: RootStateType) => state.users)
