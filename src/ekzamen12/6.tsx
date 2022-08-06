@@ -74,4 +74,4 @@ ReactDOM.render(<div>
 // Что нужно написать вместо XXX, YYY и ZZZ, чтобы при клике по имени студент
 // удалялся из списка? Напишите через пробел.
 
-//возможно  dispatch(RemoveStudentAC(s.id))
+//неправильно dispatch(RemoveStudentAC(s.id))
