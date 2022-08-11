@@ -7,7 +7,7 @@ export const TempManager = () => {
 
     const resetTemp = () => setTemp(0)
     // const increaseSeconds = () => setSeconds(seconds + 100)
-    const increaseSeconds = useCallback(() => setSeconds(seconds + 100),[])
+    const increaseSeconds = useCallback(() => setSeconds(seconds + 100),[seconds])
 
     return (
         <>
@@ -42,4 +42,4 @@ ReactDOM.render(<TempManager/>, document.getElementById('root'))
 
 //Пример ответа: const increaseSeconds = () => setSeconds(seconds + 100)
 
-//  неправильно const increaseSeconds = useCallback(() => setSeconds(seconds + 100),[])
+//  возможно const increaseSeconds = useCallback(() => setSeconds(seconds + 100),[seconds])
