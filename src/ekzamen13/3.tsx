@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 export const App = () => {
@@ -6,9 +6,9 @@ export const App = () => {
     const [seconds, setSeconds] = useState(100)
 
     const increaseSeconds = () => setSeconds(seconds + 10)
-    // useEffect(() => setCounter(count + 1), [count])
+    // useEffect(() => setCounter(count + 1), [count]) - пример
     // const increaseTemp = XXX
-
+    const increaseTemp = XXX
 
     return <>
         <TempDisplay temp={temp} increaseTemp={increaseTemp}/>
@@ -44,4 +44,4 @@ ReactDOM.render(<App/>, document.getElementById('root'));
 
 // Пример ответа: useEffect(() => setCounter(count + 1), [count])
 
-// неправильно const increaseTemp = useCallback(() => setTemp(temp + 1),[setTemp])
+//
