@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import ReactDOM from 'react-dom'
 
 type ButtonType = {
@@ -18,9 +18,13 @@ export const App = ({isAdmin}: { isAdmin: boolean }) => {
 
     const increaseSeconds = () => setSeconds(seconds + 10)
 
-    const correctButtons = XXX(() => {
+    // const correctButtons = XXX(() => {
+    //     return buttons.filter(b => isAdmin ? true : !b.forAdminOnly)
+    // }, [YYY])
+
+    const correctButtons = useCallback(() => {
         return buttons.filter(b => isAdmin ? true : !b.forAdminOnly)
-    }, [YYY])
+    }, [isAdmin])
 
     return <>
         <ButtonsPanel buttons={correctButtons}/>
@@ -57,4 +61,4 @@ ReactDOM.render(<App isAdmin={true}/>, document.getElementById('root'))
 
 // Ответ дайте через пробел: 111 222
 
-// useCallback isAdmin
+// возможно useMemo increaseSeconds
