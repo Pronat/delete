@@ -8,7 +8,7 @@ export const App = () => {
     const resetTemp = useCallback(() => setTemp(0), [])
 
     // const incSec = useCallback(() => setSeconds(seconds + 1), [])
-    const incSec = useCallback(() => setSeconds(seconds + 1), [setSeconds])
+    const incSec = useCallback(() => setSeconds(seconds + 1), [seconds])
 
     return <>
         <TempDisplay temp={temp} resetTemp={resetTemp}/>
@@ -48,4 +48,4 @@ ReactDOM.render(<App/>, document.getElementById('root'))
 
 // Пример ответа: const incSec = () => setSeconds(seconds + 1)
 
-// неправильно const incSec = useCallback(() => setSeconds(seconds + 1), [setSeconds])
+// возможно const incSec = useCallback(() => setSeconds(seconds + 1), [seconds])
