@@ -44,4 +44,4 @@ ReactDOM.render(<App/>, document.getElementById('root'));
 
 // Пример ответа: useEffect(() => setCounter(count + 1), [count])
 
-// возможно const increaseTemp = useCallback(() => setTemp(temp + 1),[temp])
+// неправильно const increaseTemp = useCallback(() => setTemp(temp + 1),[temp])

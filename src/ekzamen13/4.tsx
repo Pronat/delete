@@ -22,7 +22,7 @@ export const App = ({isAdmin}: { isAdmin: boolean }) => {
     //     return buttons.filter(b => isAdmin ? true : !b.forAdminOnly)
     // }, [YYY])
 
-    const correctButtons = useCallback(() => {
+    const correctButtons = useMemo(() => {
         return buttons.filter(b => isAdmin ? true : !b.forAdminOnly)
     }, [isAdmin])
 
@@ -61,4 +61,5 @@ ReactDOM.render(<App isAdmin={true}/>, document.getElementById('root'))
 
 // Ответ дайте через пробел: 111 222
 
-// возможно useMemo increaseSeconds
+// неправильно useMemo increaseSeconds
+// возможно useMemo isAdmin

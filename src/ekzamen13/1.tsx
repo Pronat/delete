@@ -42,4 +42,5 @@ ReactDOM.render(<TempManager/>, document.getElementById('root'))
 
 //Пример ответа: const increaseSeconds = () => setSeconds(seconds + 100)
 
-//  возможно const increaseSeconds = useCallback(() => setSeconds(seconds + 100),[seconds])
+//  неправильно const increaseSeconds = useCallback(() => setSeconds(seconds + 100),[seconds])
+//  возможно const resetTemp = useCallback(() => setTemp(0),[temp])

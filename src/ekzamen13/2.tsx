@@ -48,4 +48,4 @@ ReactDOM.render(<App/>, document.getElementById('root'))
 
 // Пример ответа: const incSec = () => setSeconds(seconds + 1)
 
-// возможно const incSec = useCallback(() => setSeconds(seconds + 1), [seconds])
+//const incSec = useCallback(() => setSeconds(seconds + 1), [seconds])
