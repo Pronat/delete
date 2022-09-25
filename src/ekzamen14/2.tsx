@@ -24,3 +24,4 @@ console.log(newState[300].likesCount === 0)
 
 // Что нужно написать вместо XXX, чтобы в консоли увидеть true?
 // неправильно  addTrackAC
+// пробовать   addTrackAC(300)

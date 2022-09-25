@@ -1,7 +1,8 @@
 export const reducer = (state: any, action: any) => {
     switch (action.type) {
         case 'USER-NAME-UPDATED':
-            return XXX
+            // return XXX
+            return {...state, user:{...state.user, name: action.name}}
 
         default:
             return state
@@ -29,4 +30,4 @@ console.log(newState.user !== state.user)
 
 //Что нужно написать вместо XXX, чтобы корректно обновить имя пользователя и в консоли увидеть:  true true true?
 
-//
+//пробовать  {...state, user:{...state.user, name: action.name}}
