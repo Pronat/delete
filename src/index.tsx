@@ -1,38 +1,52 @@
-type Status = 'Stopped' | 'Playing' | 'Paused'
-type StateType = {
-    volume: number // in percents
-    trackUrl: string // 'https://blabla.com/track01.mp3',
-    currentPlayPosition: number // milliseconds,
-    status: Status
+import {combineReducers, createStore} from 'redux'
+import ReactDOM from 'react-dom'
+import {Provider, useSelector} from 'react-redux'
+import React from 'react'
+
+let initialState = {items:
+        [
+            {id: 1, name: 'Dimych'},
+            {id: 2, name: 'Ignat'}
+        ]
 }
-export const playerReducer = (state: StateType, action: any) => {
-    switch (action.type) {
-        case 'TRACK-VOLUME-CHANGED':
-            return {
-                ...state,
-                XXX
-            }
-        default:
-            return state
-    }
+const usersReducer = (state = initialState, action: any) => {
+    return state
 }
 
-const muteTrackAC = () => ({type: 'TRACK-MUTED'})
-const changeVolumeAC = (volumeLevel: number) => ({type: 'TRACK-VOLUME-CHANGED', volumeLevel})
-const changeTrackAC = (url: string) => ({type: 'TRACK-URL-CHANGED', url})
-const changeTrackPlayStatusAC = (status: Status) => ({type: 'TRACK-STATUS-CHANGED', status})
-
-const state: StateType = {
-    status: 'Stopped',
-    currentPlayPosition: 1213,
-    trackUrl: 'https://blabla.com/track01.mp3',
-    volume: 100
+let authInitialState = {login: 'Margo', settings: {theme: 'dark'}}
+const authReducer = (state = authInitialState, action: any) => {
+    return state
 }
-const newState = playerReducer(state, changeVolumeAC(20))
-console.log(newState.volume === 20)
 
-// Напишите вместо XXX правильную строку кода, чтобы изменить громкость трека и увидеть в консоли true.
+let rootReducer = combineReducers({
+    users: usersReducer,
+    auth: authReducer
+})
 
+const store = createStore(rootReducer)
+type RootStateType = ReturnType<typeof rootReducer>
+
+const selector = (state: RootStateType) => state.users.items
+
+const Users = () => {
+
+    const users = useSelector((state: RootStateType) => state.users)
+
+    return <ul>
+        {users.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+}
+
+ReactDOM.render(<div>
+        <Provider store={store}>
+            <Users/>
+        </Provider>
+    </div>,
+    document.getElementById('root')
+)
+
+// Что нужно написать вместо XXX, чтобы отрендерить список юзеров?
+// ❗ Ответ дать минимально возможным объёмом кода
 
 
 
