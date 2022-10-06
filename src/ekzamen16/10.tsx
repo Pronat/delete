@@ -157,3 +157,17 @@ root.render(<App/>)
 //     url: string
 //     data: CommonType<T>
 // }
+
+type CommonResponseType<T = {}> = {
+// type CommonResponseType<T> = {                          или так
+    total: number
+    total_pages: number
+    page: number
+    per_page: number
+    support: {
+        url: string
+        text: string
+    }
+    url: string
+    data: T
+}
