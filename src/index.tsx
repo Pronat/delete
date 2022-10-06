@@ -3,16 +3,10 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client';
 
 // Types
-// type TodoType = {
-//     id: number
-//     tile: string
-//     complete: boolean
-//     userId: number
-// }
-type TodoType = {
+type PostType = {
+    body: string
     id: number
-    tile: string
-    complete: boolean
+    title: string
     userId: number
 }
 
@@ -22,35 +16,38 @@ const instance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const todosAPI = {
-    getTodos() {
-        return instance.get<TodoType[]>('todos?_limit=15')
-    }
+const postsAPI = {
+    getPosts() {
+        // Promise.resolve() стоит в качестве заглушки, чтобы TS не ругался и код компилировался
+        // Promise.resolve() нужно удалить и написать правильный запрос для получения постов
+        return instance.get('/posts')
+        // return instance.get('/posts')
+    },
 }
 
 
 // App
 export const App = () => {
 
-    const [todos, setTodos] = useState<Array<TodoType>>([])
+    const [posts, setPosts] = useState<PostType[]>([])
 
     useEffect(() => {
-        todosAPI.getTodos().then((res) => setTodos(res.data))
+        postsAPI.getPosts()
+            .then((res: any) => {
+                setPosts(res.data)
+            })
     }, [])
 
 
     return (
         <>
-            <h2>✅ Список тудулистов</h2>
+            <h1>📜 Список постов</h1>
             {
-                todos.map((t) => {
-                    return (
-                        <div style={t.complete ? {color: 'grey'} : {}} key={t.id}>
-                            <input type="checkbox" checked={t.complete}/>
-                            <b>Описание</b>: {t.tile}
-                        </div>
-                    )
-                })
+                posts.length
+                    ? posts.map(p => {
+                        return <div key={p.id}><b>title</b>: {p.title}</div>
+                    })
+                    : <h2>Постов нету 😥</h2>
             }
         </>
     )
@@ -61,15 +58,12 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App/>)
 
 // Описание:
-// При написании типизации по невнимательности было допущено несколько ошибок.
-// Напишите через пробел правильные свойства в TodoType, в которых была допущена ошибка.
-// Debugger / network / документация вам в помощь
+// Напишите запрос на сервер для получения всех постов
+// Типизацию возвращаемых данных в ответе указывать необязательно, но можно и указать (в ответах учтены оба варианта).
+// Исправленную версию строки напишите в качестве ответа.
+// Пример ответа: return instance.put('todolists/1')
 
-// Пример ответа: id status isDone
-
-// неправильно  userId id title completed
-// пробовать   id title completed userId
-
+// правильно  return instance.get('/posts')
 
 
 
