@@ -30,7 +30,7 @@ const commentsAPI = {
         // Promise.resolve() стоит в качестве заглушки, чтобы TS не ругался и код компилировался
         // Promise.resolve() нужно удалить и написать правильный запрос для создания нового комментария
         // return Promise.resolve()
-        return Promise.resolve<PostType[]>(data)
+        return instance.post<CommentType[]>('comments', payload)
     }
 }
 
@@ -99,3 +99,4 @@ root.render(<App/>)
 
 
 //неправильно  return Promise.post<PostType[]>('posts')
+//попробовать return instance.post<CommentType[]>('comments', payload)   (возможно payload ненужен)
