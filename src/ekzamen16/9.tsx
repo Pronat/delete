@@ -67,3 +67,6 @@ root.render(<App/>)
 // Пример ответа:  'https://jsonplaceholder.typicode.com/todos'
 
 // P.S. Эта ошибка из реальной жизни, студенты часто ошибаются и не могут понять в чем дело.
+
+
+// пробовать    return instance.get<TodoType>(`todos`)

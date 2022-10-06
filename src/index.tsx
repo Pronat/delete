@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client';
 
 // Types
-type PostType = {
-    body: string
+type TodoType = {
     id: number
     title: string
+    completed: boolean
     userId: number
 }
 
@@ -16,38 +16,43 @@ const instance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const postsAPI = {
-    getPosts() {
-        // Promise.resolve() стоит в качестве заглушки, чтобы TS не ругался и код компилировался
-        // Promise.resolve() нужно удалить и написать правильный запрос для получения постов
-        return instance.get('/posts')
-        // return instance.get('/posts')
-    },
+const todosAPI = {
+    getTodo(todoId: number) {
+        // return instance.get<TodoType>(`todos/ ${todoId}`)
+        return instance.get<TodoType>(`todos`)
+    }
 }
 
 
 // App
 export const App = () => {
 
-    const [posts, setPosts] = useState<PostType[]>([])
+    const [todo, setTodo] = useState<TodoType | null>(null)
+    const [error, setError] = useState<string>('')
 
     useEffect(() => {
-        postsAPI.getPosts()
-            .then((res: any) => {
-                setPosts(res.data)
+        const todoId = 4
+        todosAPI.getTodo(todoId)
+            .then((res: any) => setTodo(res.data))
+            .catch(e => {
+                setError('Ошибка 😰. Анализируй network 😉')
             })
     }, [])
 
 
     return (
         <>
-            <h1>📜 Список постов</h1>
+            <h2>✅ Тудулист</h2>
             {
-                posts.length
-                    ? posts.map(p => {
-                        return <div key={p.id}><b>title</b>: {p.title}</div>
-                    })
-                    : <h2>Постов нету 😥</h2>
+                !!todo
+                    ? <div>
+                        <div style={todo?.completed ? {color: 'grey'} : {}} key={todo?.id}>
+                            <input type="checkbox" checked={todo?.completed}/>
+                            <b>Описание</b>: {todo?.title}
+                        </div>
+                        <h2>Так держать. Ты справился 🚀</h2>
+                    </div>
+                    : <h2 style={{ color: 'red' }}>{error}</h2>
             }
         </>
     )
@@ -58,12 +63,19 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App/>)
 
 // Описание:
-// Напишите запрос на сервер для получения всех постов
-// Типизацию возвращаемых данных в ответе указывать необязательно, но можно и указать (в ответах учтены оба варианта).
-// Исправленную версию строки напишите в качестве ответа.
-// Пример ответа: return instance.put('todolists/1')
+// Студент по неопытности допустил одну маленькую ошибку, но из-за нее он не может вывести на экран тудулист.
+// Найдите ошибку и вставьте исправленную версию строки кода в качестве ответа
+// Пример ответа:  'https://jsonplaceholder.typicode.com/todos'
 
-// правильно  return instance.get('/posts')
+// P.S. Эта ошибка из реальной жизни, студенты часто ошибаются и не могут понять в чем дело.
+
+
+
+
+
+
+
+
 
 
 
