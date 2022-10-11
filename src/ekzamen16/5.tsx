@@ -82,4 +82,4 @@ root.render(<App/>)
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: photosAPI.updatePhotoTitle(id, title)
 
-// неправильно  photosAPI.updatePhotoTitle(id, title)
+// правильно  photosAPI.updatePhotoTitle(id, title)

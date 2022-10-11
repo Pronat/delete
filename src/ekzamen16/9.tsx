@@ -69,4 +69,4 @@ root.render(<App/>)
 // P.S. Эта ошибка из реальной жизни, студенты часто ошибаются и не могут понять в чем дело.
 
 
-// пробовать    return instance.get<TodoType>(`todos`)
+// неправильно (как 7 вопрос)    return instance.get<TodoType>(`todos`)

@@ -75,4 +75,4 @@ root.render(<App/>)
 // Пример ответа: return instance.put('posts/1')
 
 //  неправильно  return instance.delete('posts/1')
-// пробовать   return instance.delete(`posts/${id}`)
+// правильно   return instance.delete(`posts/${id}`)

@@ -158,8 +158,11 @@ root.render(<App/>)
 //     data: CommonType<T>
 // }
 
-type CommonResponseType<T = {}> = {
-// type CommonResponseType<T> = {                          или так
+
+// попробовать
+
+// type CommonResponseType<T = {}> = {     так неправильно, пробовать дальше
+type CommonResponseType<T> = {
     total: number
     total_pages: number
     page: number

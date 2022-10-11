@@ -99,4 +99,4 @@ root.render(<App/>)
 
 
 //неправильно  return Promise.post<PostType[]>('posts')
-//попробовать return instance.post<CommentType[]>('comments', payload)   (возможно payload ненужен)
+//неправильно return instance.post<CommentType[]>('comments', payload)   (возможно payload ненужен)
