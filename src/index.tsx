@@ -2,141 +2,51 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client';
 
-// TYPES
-type UserType = {
-    avatar: string
-    email: string
-    first_name: string
-    id: 1
-    last_name: string
-}
-
-type ColorType = {
-    color: string
+// Types
+type TodoType = {
     id: number
-    name: string
-    pantone_value: string
-    year: number
+    title: string
+    completed: boolean
+    userId: number
 }
 
-type UsersResponseType = {
-    total: number
-    total_pages: number
-    page: number
-    per_page: number
-    support: {
-        url: string
-        text: string
-    }
-    url: string
-    data: UserType[]
-}
-
-type ColorsResponseType = {
-    total: number
-    total_pages: number
-    page: number
-    per_page: number
-    support: {
-        url: string
-        text: string
-    }
-    url: string
-    data: ColorType[]
-}
-
-type CommonResponseType<T = {}> = {
-    total: number
-    total_pages: number
-    page: number
-    per_page: number
-    support: {
-        url: string
-        text: string
-    }
-    url: string
-    data: T
-}
 
 // Api
 const instance = axios.create({
-    baseURL: 'https://reqres.in/api/'
+    baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const reqresAPI = {
-    getUsers() {
-        return instance.get<UsersResponseType>('users')
-    },
-    getColors() {
-        return instance.get<ColorsResponseType>('colors')
+const todosAPI = {
+    getTodos() {
+        return instance.get<TodoType[]>('todos?_limit=15')
     }
 }
 
 
 // App
-const App = () => {
+export const App = () => {
+
+    const [todos, setTodos] = useState<Array<TodoType>>([])
+
+    useEffect(() => {
+        todosAPI.getTodos().then((res) => setTodos(res.data))
+    }, [])
+
+
     return (
         <>
-            <h1>Reqres API</h1>
-            <Users/>
-            <Colors/>
+            <h2>✅ Список тудулистов</h2>
+            {
+                todos.map((t) => {
+                    return (
+                        <div style={t.complete ? {color: 'grey'} : {}} key={t.id}>
+                            <input type="checkbox" checked={t.complete}/>
+                            <b>Описание</b>: {t.tile}
+                        </div>
+                    )
+                })
+            }
         </>
-    )
-}
-
-const Users = () => {
-
-    const [users, setUsers] = useState<UserType[]>([])
-
-    useEffect(() => {
-        reqresAPI.getUsers()
-            .then((res) => setUsers(res.data.data))
-    }, [])
-
-    return (
-        <div>
-            <h2>Users</h2>
-            <div style={{display: 'flex'}}>
-                {
-                    users.map(u => {
-                        return (
-                            <div key={u.id} style={{marginRight: '25px'}}>
-                                <p>{u.first_name}</p>
-                                <img src={u.avatar} alt=""/>
-                            </div>
-                        )
-                    })
-                }</div>
-        </div>
-    )
-}
-
-const Colors = () => {
-
-    const [colors, setColors] = useState<ColorType[]>([])
-
-    useEffect(() => {
-        reqresAPI.getColors()
-            .then((res) => setColors(res.data.data))
-    }, [])
-
-    return (
-        <div>
-            <h2>Colors</h2>
-            <div style={{display: 'flex'}}>
-                {
-                    colors.map(c => {
-                        return (
-                            <div key={c.id} style={{marginRight: '25px'}}>
-                                <p>{c.name}</p>
-                                <div style={{backgroundColor: c.color, width: '128px', height: '30px'}}>
-                                    <b>{c.color}</b>
-                                </div>
-                            </div>
-                        )
-                    })
-                }</div>
-        </div>
     )
 }
 
@@ -145,27 +55,15 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App/>)
 
 // Описание:
-// При запуске проекта на экране вы увидите 2 списка: Users и Colors.
-// С ними все хорошо, но обратите внимание на типизацию ответов с сервера UsersResponseType и ColorsResponseType.
-// Дублирование типов на лицо.
-// Ваша задача написать дженериковый тип CommonResponseType и заменить им дублирующие типы.
-// Очередность свойств в типах менять запрещено (по причине что нам будет тяжело перебрать все правильные варианты :) )
-// Параметр тип назовите буквой T
+// При написании типизации по невнимательности было допущено несколько ошибок.
+// Напишите через пробел правильные свойства в TodoType, в которых была допущена ошибка.
+// Debugger / network / документация вам в помощь
 
-// В качестве ответа нужно скопировать полностью рабочий дженериковый тип CommonResponseType
+// Пример ответа: id status isDone
 
-// type CommonResponseType = {
-//     total: number
-//     total_pages: number
-//     page: number
-//     per_page: number
-//     support: {
-//         url: string
-//         text: string
-//     }
-//     url: string
-//     data: CommonType<T>
-// }
+// неправильно  userId id title completed
+// неправильно   id title completed userId
+// попробовать   title completed
 
 
 
@@ -175,41 +73,3 @@ root.render(<App/>)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from 'react';
-// import ReactDOM from 'react-dom/client';
-// import './index.css';
-// import App from './App';
-// import reportWebVitals from './reportWebVitals';
-//
-// const root = ReactDOM.createRoot(
-//   document.getElementById('root') as HTMLElement
-// );
-// root.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>
-// );
-//
-// // If you want to start measuring performance in your app, pass a function
-// // to log results (for example: reportWebVitals(console.log))
-// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
