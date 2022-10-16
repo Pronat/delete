@@ -1,13 +1,14 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom/client'
 
 // Types
-type TodoType = {
+type PhotoType = {
+    albumId: number
     id: number
     title: string
-    completed: boolean
-    userId: number
+    url: string
+    thumbnailUrl: string
 }
 
 
@@ -16,33 +17,59 @@ const instance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const todosAPI = {
-    getTodos() {
-        return instance.get<TodoType[]>('todos?_limit=15')
+const photosAPI = {
+    getPhotos(page: number) {
+        return instance.get<PhotoType[]>(`photos?_limit=2?_page${page}`)
     }
 }
 
 
 // App
+
+const buttons = [
+    {id: 1, title: '1'},
+    {id: 2, title: '2'},
+    {id: 3, title: '3'},
+]
+
 export const App = () => {
 
-    const [todos, setTodos] = useState<Array<TodoType>>([])
+    const [photos, setPhotos] = useState<PhotoType[]>([])
+    const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
-        todosAPI.getTodos().then((res) => setTodos(res.data))
-    }, [])
+        photosAPI.getPhotos(currentPage)
+            .then((res) => {
+                setPhotos(res.data)
+            })
+    }, [currentPage])
 
+    const setPageHandler = (page: number) => {
+        setCurrentPage(page)
+    };
 
     return (
         <>
-            <h2>✅ Список тудулистов</h2>
+            <h1>📸 Список фоток</h1>
+            {/* Photos */}
             {
-                todos.map((t) => {
+                photos.map(p => {
+                    return <div style={{marginBottom: '25px'}} key={p.id}>
+                        <b>title</b>: {p.title}
+                        <div><img src={p.thumbnailUrl} alt=""/></div>
+                    </div>
+                })
+            }
+
+            {/* Buttons */}
+            {
+                buttons.map(b => {
                     return (
-                        <div style={t.complete ? {color: 'grey'} : {}} key={t.id}>
-                            <input type="checkbox" checked={t.complete}/>
-                            <b>Описание</b>: {t.tile}
-                        </div>
+                        <button key={b.id}
+                                style={b.id === currentPage ? {backgroundColor: 'lightblue'} : {}}
+                                onClick={() => setPageHandler(b.id)}>
+                            {b.title}
+                        </button>
                     )
                 })
             }
@@ -55,21 +82,8 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App/>)
 
 // Описание:
-// При написании типизации по невнимательности было допущено несколько ошибок.
-// Напишите через пробел правильные свойства в TodoType, в которых была допущена ошибка.
-// Debugger / network / документация вам в помощь
-
-// Пример ответа: id status isDone
-
-// неправильно  userId id title completed
-// неправильно   id title completed userId
-// попробовать   title completed
-
-
-
-
-
-
-
-
-
+// Пагинация не работает.
+// При переходе по страницам, контент (описание и изображение фоток) должен меняться.
+// Подсказка. В одной строке кода допущено 2 ошибки.
+// Задача: найти эти ошибки, и исправленную версию строки написать в качестве ответа.
+// Пример ответа: const [currentPage, setCurrentPage] = useState(page)

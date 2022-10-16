@@ -19,6 +19,7 @@ const instance = axios.create({
 
 const photosAPI = {
     getPhotos(page: number) {
+        // return instance.get<PhotoType[]>(`photos?_limit=2?_page${page}`)
         return instance.get<PhotoType[]>(`photos?_limit=2?_page${page}`)
     }
 }
