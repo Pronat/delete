@@ -70,3 +70,4 @@ root.render(<App/>)
 
 
 // неправильно    return instance.get<TodoType>(`todos`)
+// пробовать     return instance.get<TodoType>(`todos`)
