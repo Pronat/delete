@@ -100,3 +100,4 @@ root.render(<App/>)
 
 //неправильно  return Promise.post<PostType[]>('posts')
 //неправильно return instance.post<CommentType[]>('comments', payload)   (возможно payload ненужен)
+//правильно return instance.post('comments', payload)

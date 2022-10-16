@@ -159,9 +159,7 @@ root.render(<App/>)
 // }
 
 
-// попробовать
-
-// type CommonResponseType<T = {}> = {     так неправильно, пробовать дальше
+// правильно
 type CommonResponseType<T> = {
     total: number
     total_pages: number
