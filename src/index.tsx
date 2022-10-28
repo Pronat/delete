@@ -1,73 +1,103 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client';
+import { combineReducers, legacy_createStore as createStore } from 'redux'
+import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import axios from 'axios';
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 // Types
-type TodoType = {
+type PhotoType = {
+    albumId: number
     id: number
     title: string
-    completed: boolean
-    userId: number
+    url: string
+    thumbnailUrl: string
 }
-
 
 // Api
 const instance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const todosAPI = {
-    getTodo(todoId: number) {
-        // return instance.get<TodoType>(`todos/ ${todoId}`)
-        return instance.get<TodoType>(`todos`)
-    }
+const photosAPI = {
+    getPhotos() {
+        return instance.get<PhotoType[]>('photos?_limit=3')
+    },
 }
 
 
-// App
-export const App = () => {
+// Reducer
+const initState = [] as PhotoType[]
 
-    const [todo, setTodo] = useState<TodoType | null>(null)
-    const [error, setError] = useState<string>('')
+type InitStateType = typeof initState
 
-    useEffect(() => {
-        const todoId = 4
-        todosAPI.getTodo(todoId)
-            .then((res: any) => setTodo(res.data))
-            .catch(e => {
-                setError('Ошибка 😰. Анализируй network 😉')
-            })
-    }, [])
+const photoReducer = (state: InitStateType = initState, action: ActionsType) => {
+    switch (action.type) {
+        case 'PHOTO/GET-PHOTOS':
+            return action.photos
 
+        default:
+            return state
+    }
+}
+
+const getPhotosAC = (photos: PhotoType[]) => ({type: 'PHOTO/GET-PHOTOS', photos} as const)
+type ActionsType = ReturnType<typeof getPhotosAC>
+
+const getPhotosTC = (): AppThunk => (dispatch) => {
+    photosAPI.getPhotos()
+        .then((res) => {
+            dispatch(getPhotosAC(res.data))
+        })
+}
+
+// Store
+const rootReducer = combineReducers({
+    photo: photoReducer,
+})
+
+const store = createStore(rootReducer)
+type RootState = ReturnType<typeof store.getState>
+type AppDispatch = ThunkDispatch<RootState, unknown, ActionsType>
+type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, ActionsType>
+const useAppDispatch = () => useDispatch<AppDispatch>()
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+
+// Components
+const App = () => {
+    const dispatch = useAppDispatch()
+    const photos = useAppSelector(state => state.photo)
+
+    const getPhotosHandler = () => {
+        dispatch(getPhotosTC())
+    };
 
     return (
         <>
-            <h2>✅ Тудулист</h2>
+            <h1>📸 Фото</h1>
             {
-                !!todo
-                    ? <div>
-                        <div style={todo?.completed ? {color: 'grey'} : {}} key={todo?.id}>
-                            <input type="checkbox" checked={todo?.completed}/>
-                            <b>Описание</b>: {todo?.title}
-                        </div>
-                        <h2>Так держать. Ты справился 🚀</h2>
+                photos.map(p => {
+                    return <div key={p.id}>
+                        <b>title</b>: {p.title}
+                        <div><img src={p.thumbnailUrl} alt=""/></div>
                     </div>
-                    : <h2 style={{ color: 'red' }}>{error}</h2>
+                })
             }
+
+            <button onClick={getPhotosHandler}>Подгрузить фотографии</button>
         </>
     )
 }
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<App/>)
+root.render(<Provider store={store}> <App/></Provider>)
 
 // Описание:
-// Студент по неопытности допустил одну маленькую ошибку, но из-за нее он не может вывести на экран тудулист.
-// Найдите ошибку и вставьте исправленную версию строки кода в качестве ответа
-// Пример ответа:  'https://jsonplaceholder.typicode.com/todos'
-
-// P.S. Эта ошибка из реальной жизни, студенты часто ошибаются и не могут понять в чем дело.
-
-
-// пробовать     return instance.get<TodoType>(`todos`)
+// При нажатии на кнопку "Подгрузить фотографии" вы должны увидеть список фотографий,
+// но ничего не подгружается.
+// Найдите и исправьте ошибку.
+// Debugger / network / console.log вам в помощь.
+// Исправленную версию строки напишите в качестве ответа.
+// Пример ответа: type InitStateType = typeof initState
