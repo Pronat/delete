@@ -89,7 +89,10 @@ const App = () => {
     const todos = useAppSelector(state => state.todos)
 
     useEffect(() => {
-        getPostsTC()
+
+        // getPostsTC()
+        dispatch(getPostsTC())
+
     }, [])
 
     const changeStatusHandler = (id: number, completed: boolean) => {
@@ -128,3 +131,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Найдите и исправьте ошибку.
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: type InitStateType = typeof initState
+
+
+// пробовать   dispatch(getPostsTC())
