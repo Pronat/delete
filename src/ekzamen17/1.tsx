@@ -25,4 +25,4 @@ root.render(<App/>)
 // Вместо XXX и YYY через пробел напишите параметры которые приходят в санку.
 // Пример ответа: useCallback state
 
-// правильно dispatch getState
+// правильно   dispatch getState

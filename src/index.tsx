@@ -1,17 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client';
-import { combineReducers, legacy_createStore as createStore } from 'redux'
+import { AnyAction, applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import axios from 'axios';
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 // Types
-type PhotoType = {
-    albumId: number
+type TodoType = {
     id: number
     title: string
-    url: string
-    thumbnailUrl: string
+    completed: boolean
+    userId: number
 }
 
 // Api
@@ -19,85 +18,113 @@ const instance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const photosAPI = {
-    getPhotos() {
-        return instance.get<PhotoType[]>('photos?_limit=3')
+const todosAPI = {
+    getTodos() {
+        return instance.get<TodoType[]>('todos?_limit=15')
     },
+    changeTodoStatus(id: number, completed: boolean) {
+        return instance.patch(`todos/${id}`, {completed})
+    }
 }
 
 
 // Reducer
-const initState = [] as PhotoType[]
+const initState = [] as TodoType[]
 
 type InitStateType = typeof initState
 
-const photoReducer = (state: InitStateType = initState, action: ActionsType) => {
+const todosReducer = (state: InitStateType = initState, action: ActionsType) => {
     switch (action.type) {
-        case 'PHOTO/GET-PHOTOS':
-            return action.photos
+        case 'TODOS/GET-TODOS':
+            return action.todos
+
+        case 'TODOS/CHANGE-TODO-STATUS':
+            return state.map((t) => {
+                if (t.id === action.todo.id) {
+                    return {...t, completed: action.todo.completed}
+                } else {
+                    return t
+                }
+            })
 
         default:
             return state
     }
 }
 
-const getPhotosAC = (photos: PhotoType[]) => ({type: 'PHOTO/GET-PHOTOS', photos} as const)
-type ActionsType = ReturnType<typeof getPhotosAC>
+const getTodosAC = (todos: TodoType[]) => ({type: 'TODOS/GET-TODOS', todos} as const)
+const changeTodoStatusAC = (todo: TodoType) => ({type: 'TODOS/CHANGE-TODO-STATUS', todo} as const)
+type ActionsType = ReturnType<typeof getTodosAC> | ReturnType<typeof changeTodoStatusAC>
 
-const getPhotosTC = (): AppThunk => (dispatch) => {
-    photosAPI.getPhotos()
+// Thunk
+const getPostsTC = (): AppThunk => (dispatch) => {
+    todosAPI.getTodos()
         .then((res) => {
-            dispatch(getPhotosAC(res.data))
+            dispatch(getTodosAC(res.data))
+        })
+}
+
+const changeTodoStatusTC = (id: number, completed: boolean): AppThunk => (dispatch) => {
+    todosAPI.changeTodoStatus(id, completed)
+        .then((res) => {
+            dispatch(changeTodoStatusAC(res.data))
         })
 }
 
 // Store
 const rootReducer = combineReducers({
-    photo: photoReducer,
+    todos: todosReducer,
 })
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, applyMiddleware(thunk))
 type RootState = ReturnType<typeof store.getState>
 type AppDispatch = ThunkDispatch<RootState, unknown, ActionsType>
 type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, ActionsType>
 const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-
-// Components
+// App
 const App = () => {
     const dispatch = useAppDispatch()
-    const photos = useAppSelector(state => state.photo)
+    const todos = useAppSelector(state => state.todos)
 
-    const getPhotosHandler = () => {
-        dispatch(getPhotosTC())
+    useEffect(() => {
+        getPostsTC()
+    }, [])
+
+    const changeStatusHandler = (id: number, completed: boolean) => {
+        dispatch(changeTodoStatusTC(id, completed))
     };
 
     return (
         <>
-            <h1>📸 Фото</h1>
+            <h2>✅ Список тудулистов</h2>
             {
-                photos.map(p => {
-                    return <div key={p.id}>
-                        <b>title</b>: {p.title}
-                        <div><img src={p.thumbnailUrl} alt=""/></div>
-                    </div>
-                })
-            }
+                todos.length ?
 
-            <button onClick={getPhotosHandler}>Подгрузить фотографии</button>
+                    todos.map((t) => {
+                        return (
+                            <div style={t.completed ? {color: 'grey'} : {}} key={t.id}>
+                                <input type="checkbox"
+                                       checked={t.completed}
+                                       onChange={() => changeStatusHandler(t.id, !t.completed)}
+                                />
+                                <b>Описание</b>: {t.title}
+                            </div>
+                        )
+                    })
+                    : <h2>Тудулистов нету 😥</h2>
+            }
         </>
     )
 }
-
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<Provider store={store}> <App/></Provider>)
 
 // Описание:
-// При нажатии на кнопку "Подгрузить фотографии" вы должны увидеть список фотографий,
-// но ничего не подгружается.
+// При загрузке приложения вы должны увидеть список тудулистов,
+// но из-за невнимательности была допущена ошибка.
 // Найдите и исправьте ошибку.
-// Debugger / network / console.log вам в помощь.
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: type InitStateType = typeof initState
