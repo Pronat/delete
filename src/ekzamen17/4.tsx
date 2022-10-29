@@ -66,7 +66,12 @@ const App = () => {
     const posts = useAppSelector(state => state.posts)
 
     useEffect(() => {
-        dispatch(getPostsTC)
+
+
+        // dispatch(getPostsTC)
+        dispatch(getPostsTC())
+
+
     }, [])
 
     return (
@@ -95,3 +100,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: type InitStateType = typeof initState
 
 // P.S. Эта ошибка из реальной жизни, студенты так часто ошибаются и не могут понять в чем дело.
+
+
+// пробовать  dispatch(getPostsTC())
