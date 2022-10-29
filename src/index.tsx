@@ -5,7 +5,6 @@ import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import axios from 'axios';
 
-
 // Types
 type PostType = {
     body: string
@@ -21,17 +20,13 @@ const instance = axios.create({
 
 const postsAPI = {
     getPosts() {
-        return instance.get<PostType[]>('posts?_limit=10')
+        return instance.get<PostType[]>('posts?_limit=15')
     },
-    createPost() {
-        const payload = {
-            body: 'new post body',
-            title: 'new post title',
-            userId: 1
-        }
-        return instance.post('posts', payload)
+    updatePostTitle(post: PostType) {
+        return instance.put<PostType>(`posts/${post.id}`, post)
     }
 }
+
 
 // Reducer
 const initState = [] as PostType[]
@@ -43,19 +38,23 @@ const postsReducer = (state: InitStateType = initState, action: ActionsType) => 
         case 'POSTS/GET-POSTS':
             return action.posts
 
-        case 'POSTS/CREATE-POST':
-            return [action.post, ...state]
+        case 'POSTS/UPDATE-POST-TITLE':
+            return state.map((p) => {
+                if (p.id === action.post.id) {
+                    return {...p, title: action.post.title}
+                } else {
+                    return p
+                }
+            })
 
         default:
             return state
     }
 }
 
-
 const getPostsAC = (posts: PostType[]) => ({type: 'POSTS/GET-POSTS', posts} as const)
-const createPostAC = (post: PostType) => ({type: 'POSTS/CREATE-POST', post} as const)
-
-type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof createPostAC>
+const updatePostTitleAC = (post: PostType) => ({type: 'POSTS/UPDATE-POST-TITLE', post} as const)
+type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof updatePostTitleAC>
 
 const getPostsTC = (): AppThunk => (dispatch) => {
     postsAPI.getPosts()
@@ -64,11 +63,22 @@ const getPostsTC = (): AppThunk => (dispatch) => {
         })
 }
 
-const addPostTC = (): AppThunk => (dispatch) => {
-    postsAPI.createPost()
-        .then((res) => {
-            dispatch(createPostAC(res.data))
-        })
+const updatePostTC = (postId: number): AppThunk => (dispatch, getState: any) => {
+    try {
+        // const currentPost = getState().find((p: PostType) => p.id === postId)
+        const currentPost = getState().find((p: PostType) => p.id === postId)
+
+        if (currentPost) {
+            const payload = {...currentPost, title: 'Летим 🚀'}
+            postsAPI.updatePostTitle(payload)
+                .then((res) => {
+                    dispatch(updatePostTitleAC(res.data))
+                })
+        }
+    } catch (e) {
+        alert('Обновить пост не удалось 😢')
+    }
+
 }
 
 // Store
@@ -83,7 +93,6 @@ type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, A
 const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-
 // App
 const App = () => {
     const dispatch = useAppDispatch()
@@ -93,18 +102,19 @@ const App = () => {
         dispatch(getPostsTC())
     }, [])
 
-    const addPostHandler = () => {
-        dispatch(addPostTC())
-        // alert('Пост добавить не получилось. Напишите код самостоятельно 🚀')
-    };
+    const updatePostHandler = (postId: number) => {
+        dispatch(updatePostTC(postId))
+    }
 
     return (
         <>
             <h1>📜 Список постов</h1>
-            <button style={{marginBottom: '10px'}} onClick={addPostHandler}>Добавить пост</button>
             {
                 posts.map(p => {
-                    return <div key={p.id}><b>title</b>: {p.title}</div>
+                    return <div key={p.id}>
+                        <b>title</b>: {p.title}
+                        <button onClick={() => updatePostHandler(p.id)}>Обновить пост</button>
+                    </div>
                 })
             }
         </>
@@ -115,8 +125,8 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<Provider store={store}> <App/></Provider>)
 
 // Описание:
-// При нажатии на кнопку "Добавить пост" пост должен добавиться,
-// но появляется alert.
-// Вместо alerta напишите код, чтобы пост добавлялся.
-// Правильную версию строки напишите в качестве ответа.
-// Пример ответа: return instance.get<PostType[]>('posts?_limit=10')
+// Попробуйте обновить пост и вы увидите alert с ошибкой.
+// Debugger / network / console.log вам в помощь
+// Найдите ошибку и вставьте исправленную строку кода в качестве ответа.
+// Пример ответа: const payload = {...currentPost, tile: 'Летим 🚀'}
+// Подсказка. Избавьтесь от всех any и решение придет само собой 😉

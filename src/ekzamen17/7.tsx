@@ -91,3 +91,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Что нужно написать вместо any, any, any чтобы правильно типизировать dispatch ?
 // Ответ дайте через пробел
 // Пример ответа: unknown status isDone
+
+
+//try   type DispatchType = ThunkDispatch<RootState, unknown, ActionsType>
