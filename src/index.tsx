@@ -63,10 +63,10 @@ const getPostsTC = (): AppThunk => (dispatch) => {
         })
 }
 
-const updatePostTC = (postId: number): AppThunk => (dispatch, getState: any) => {
+const updatePostTC = (postId: number): AppThunk => (dispatch, getState: () => RootState) => {
     try {
         // const currentPost = getState().find((p: PostType) => p.id === postId)
-        const currentPost = getState().find((p: PostType) => p.id === postId)
+        const currentPost = getState().posts.find((p: any) => p.id === postId)
 
         if (currentPost) {
             const payload = {...currentPost, title: 'Летим 🚀'}
