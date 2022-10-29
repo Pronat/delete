@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client';
-import { combineReducers, legacy_createStore as createStore } from 'redux'
+import {applyMiddleware, combineReducers, legacy_createStore as createStore} from 'redux'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import axios from 'axios';
 import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
@@ -56,7 +56,11 @@ const rootReducer = combineReducers({
     photo: photoReducer,
 })
 
-const store = createStore(rootReducer)
+
+// const store = createStore(rootReducer)
+const store = createStore(rootReducer, applyMiddleware(thunk))
+
+
 type RootState = ReturnType<typeof store.getState>
 type AppDispatch = ThunkDispatch<RootState, unknown, ActionsType>
 type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, ActionsType>
@@ -101,3 +105,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Debugger / network / console.log вам в помощь.
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: type InitStateType = typeof initState
+
+// пробовать   const store = createStore(rootReducer, applyMiddleware(thunk))
