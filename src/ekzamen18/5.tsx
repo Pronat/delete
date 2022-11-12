@@ -23,6 +23,7 @@ const instance = axios.create({
 const commentsAPI = {
     getComments() {
         return instance.get<CommentType[]>('commentaries')
+        // return instance.get<CommentType[]>('comments')
     }
 }
 
@@ -106,3 +107,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Если сделаете все верно, то увидите комментарии.
 // В качестве ответа указать исправленную строку коду
 // Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
+
+
+// пробовать  return instance.get<CommentType[]>('comments')

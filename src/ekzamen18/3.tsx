@@ -55,6 +55,7 @@ type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof setError>
 const getPostsTC = (): AppThunk => (dispatch) => {
     postsAPI.getPosts()
         .then((res) => {
+            debugger
             dispatch(getPostsAC(res.data))
         })
         .catch((e: AxiosError) => {

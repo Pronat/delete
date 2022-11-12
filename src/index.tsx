@@ -7,58 +7,55 @@ import axios, { AxiosError } from 'axios';
 
 
 // Types
-type PostType = {
-    body: string
+type CommentType = {
+    postId: number
     id: number
-    title: string
-    userId: number
+    name: string
+    email: string
+    body: string
 }
 
 // Api
 const instance = axios.create({
-    baseURL: 'https://jsonplaceholder.typicode.com/ '
+    baseURL: 'https://jsonplaceholder.typicode.com/'
 })
 
-const postsAPI = {
-    getPosts() {
-        return instance.get<PostType[]>('posts')
-    },
+const commentsAPI = {
+    getComments() {
+        debugger
+        return instance.get<CommentType[]>('commentaries')
+        // return instance.get<CommentType[]>('comments')
+    }
 }
 
 // Reducer
 const initState = {
-    error: null as string | null,
-    posts: [] as PostType[]
+    comments: [] as CommentType[]
 }
 
 type InitStateType = typeof initState
 
-const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
+const appReducer = (state: InitStateType = initState, action: ActionsType) => {
     switch (action.type) {
-        case 'POSTS/GET-POSTS':
-            return {...state, posts: action.posts}
-
-        case 'POSTS/SET-ERROR':
-            return {...state, error: action.error}
+        case 'COMMENTS/GET-COMMENTS':
+            return {...state, comments: action.comments}
 
         default:
             return state
     }
 }
 
-
-const getPostsAC = (posts: PostType[]) => ({type: 'POSTS/GET-POSTS', posts} as const)
-const setError = (error: string | null) => ({type: 'POSTS/SET-ERROR', error} as const)
-type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof setError>
+const getCommentsAC = (comments: CommentType[]) => ({type: 'COMMENTS/GET-COMMENTS', comments} as const)
+type ActionsType = ReturnType<typeof getCommentsAC>
 
 // Thunk
-const getPostsTC = (): AppThunk => (dispatch) => {
-    postsAPI.getPosts()
+const getCommentsTC = (): AppThunk => (dispatch) => {
+    commentsAPI.getComments()
         .then((res) => {
-            dispatch(getPostsAC(res.data))
+            dispatch(getCommentsAC(res.data))
         })
         .catch((e: AxiosError) => {
-            // dispatch(setError(e.message))
+            alert(`Сообщение об ошибке: ${e.message}`)
         })
 }
 
@@ -79,28 +76,25 @@ const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 // Components
 export const App = () => {
 
+    const comments = useAppSelector(state => state.app.comments)
     const dispatch = useAppDispatch()
 
-    const posts = useAppSelector(state => state.app.posts)
-    const error = useAppSelector(state => state.app.error)
-
     useEffect(() => {
-        dispatch(getPostsTC())
+        dispatch(getCommentsTC())
     }, [])
 
     return (
         <>
-            <h1>📜 Список постов</h1>
+            <h1>📝 Список комментариев</h1>
             {
-                posts.length
+                comments.length
                     ?
-                    posts.map(c => {
-                        return <div key={c.id}><b>Описание</b>: {c.body} </div>
+                    comments.map(c => {
+                        return <div key={c.id}><b>Comment</b>: {c.body} </div>
                     })
                     :
-                    <h3>❌ Посты не подгрузились. Произошла какая-то ошибка. Выведите сообщение об ошибке на экран</h3>
+                    <h3>❌ Комментарии не подгрузились. Произошла какая-то ошибка. Найди и исправь ее</h3>
             }
-            <h2 style={{color: 'red'}}>{!!error && error}</h2>
         </>
     )
 }
@@ -109,9 +103,8 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<Provider store={store}> <App/></Provider>)
 
 // Описание:
-// ❌ Посты не подгрузились. Произошла какая-то ошибка.
-// Чинить приложение не нужно (если только для себя, в ответе это не учитывается).
-// Задача: вывести сообщение об ошибке на экран.
-// В качестве ответа указать строку коду, которая позволит это осуществить
+// ❌ Комментарии не подгрузились. Произошла какая-то ошибка.
+// В данном задании вам нужно найти ошибку и починить приложение.
+// Если сделаете все верно, то увидите комментарии.
+// В качестве ответа указать исправленную строку коду
 // Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
-
