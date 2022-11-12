@@ -66,6 +66,7 @@ const getPhotosTC = (): AppThunk => (dispatch) => {
         })
         .catch((e: AxiosError) => {
             dispatch(setError(e.message))
+            // dispatch(setLoadingAC(false))
         })
 }
 
@@ -132,3 +133,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Напишите код, с помощью которого можно реализовать данную задачу
 // В качестве ответа напишите строку кода.
 // Пример ответа: .then(() =>  dispatch(getPhotosAC(res.data)))
+
+// пробовать   dispatch(setLoadingAC(false))

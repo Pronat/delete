@@ -1,64 +1,119 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client';
-import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
-import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { applyMiddleware, combineReducers, legacy_createStore as createStore, Dispatch } from 'redux'
 import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
-import axios, { AxiosError } from 'axios';
+import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import axios, { AxiosError } from 'axios'
 
-
-// Types
-type CommentType = {
-    postId: number
-    id: number
-    name: string
+// TYPES
+type UserType = {
+    avatar: string
     email: string
-    body: string
+    first_name: string
+    id: 1
+    last_name: string
 }
 
-// Api
-const instance = axios.create({
-    baseURL: 'https://jsonplaceholder.typicode.com/'
-})
+type ColorType = {
+    color: string
+    id: number
+    name: string
+    pantone_value: string
+    year: number
+}
 
-const commentsAPI = {
-    getComments() {
-        debugger
-        return instance.get<CommentType[]>('commentaries')
-        // return instance.get<CommentType[]>('comments')
+type CommonResponseType<T> = {
+    total: number
+    total_pages: number
+    page: number
+    per_page: number
+    support: {
+        url: string
+        text: string
+    }
+    data: T
+}
+
+// API
+const instance = axios.create({baseURL: 'https://reqres.in/api/'})
+
+const reqresAPI = {
+    getUsers() {
+        return instance.get<CommonResponseType<UserType[]>>('users?delay=3')
+    },
+    getColors() {
+        return instance.get<CommonResponseType<ColorType[]>>('colors?delay=3')
     }
 }
 
+
 // Reducer
 const initState = {
-    comments: [] as CommentType[]
+    isLoading: false,
+    error: null as string | null,
+    users: [] as UserType[],
+    colors: [] as ColorType[],
 }
 
 type InitStateType = typeof initState
 
-const appReducer = (state: InitStateType = initState, action: ActionsType) => {
+const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
-        case 'COMMENTS/GET-COMMENTS':
-            return {...state, comments: action.comments}
-
+        case 'APP/GET-USERS':
+            return {...state, users: action.users}
+        case 'APP/GET-COLORS':
+            return {...state, colors: action.colors}
+        case 'APP/IS-LOADING':
+            return {...state, isLoading: action.isLoading}
+        case 'APP/SET-ERROR':
+            return {...state, error: action.error}
         default:
             return state
     }
 }
 
-const getCommentsAC = (comments: CommentType[]) => ({type: 'COMMENTS/GET-COMMENTS', comments} as const)
-type ActionsType = ReturnType<typeof getCommentsAC>
+const getUsersAC = (users: UserType[]) => ({type: 'APP/GET-USERS', users} as const)
+const getColorsAC = (colors: ColorType[]) => ({type: 'APP/GET-COLORS', colors} as const)
+const setLoadingAC = (isLoading: boolean) => ({type: 'APP/IS-LOADING', isLoading} as const)
+const setError = (error: string | null) => ({type: 'APP/SET-ERROR', error} as const)
+type ActionsType =
+    | ReturnType<typeof getUsersAC>
+    | ReturnType<typeof getColorsAC>
+    | ReturnType<typeof setLoadingAC>
+    | ReturnType<typeof setError>
+
+// Utils functions
+function baseSuccessHandler<T>(dispatch: Dispatch, actionCreator: Function, data: T) {
+    dispatch(actionCreator(data))
+    dispatch(setLoadingAC(false))
+}
 
 // Thunk
-const getCommentsTC = (): AppThunk => (dispatch) => {
-    commentsAPI.getComments()
+const getUsersTC = (): AppThunk => (dispatch) => {
+    dispatch(setLoadingAC(true))
+    reqresAPI.getUsers()
         .then((res) => {
-            dispatch(getCommentsAC(res.data))
+            // XXX
+            dispatch(getUsersAC(res.data.data))
         })
         .catch((e: AxiosError) => {
-            alert(`Сообщение об ошибке: ${e.message}`)
+            dispatch(setError(e.message))
+            dispatch(setLoadingAC(false))
         })
 }
 
+const getColorsTC = (): AppThunk => (dispatch) => {
+    dispatch(setLoadingAC(true))
+    reqresAPI.getColors()
+        .then((res) => {
+            // YYY
+            dispatch(getColorsAC(res.data.data))
+        })
+        .catch((e: AxiosError) => {
+            dispatch(setError(e.message))
+            dispatch(setLoadingAC(false))
+        })
+}
 
 // Store
 const rootReducer = combineReducers({
@@ -73,38 +128,100 @@ const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 
-// Components
-export const App = () => {
+// COMPONENTS
+// Loader
+export const Loader = () => {
+    return (
+        <h1>Loading ...</h1>
+    )
+}
 
-    const comments = useAppSelector(state => state.app.comments)
+
+const App = () => {
+    return (
+        <>
+            <h1>Reqres API</h1>
+            <Users/>
+            <Colors/>
+        </>
+    )
+}
+
+const Users = () => {
     const dispatch = useAppDispatch()
+    const users = useAppSelector(state => state.app.users)
+    const error = useAppSelector(state => state.app.error)
+    const isLoading = useAppSelector(state => state.app.isLoading)
 
     useEffect(() => {
-        dispatch(getCommentsTC())
+        dispatch(getUsersTC())
     }, [])
 
     return (
-        <>
-            <h1>📝 Список комментариев</h1>
-            {
-                comments.length
-                    ?
-                    comments.map(c => {
-                        return <div key={c.id}><b>Comment</b>: {c.body} </div>
+        <div>
+            <h2>Users</h2>
+            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
+            {isLoading && <Loader/>}
+            <div style={{display: 'flex'}}>
+                {
+                    users.map(u => {
+                        return (
+                            <div key={u.id} style={{marginRight: '25px'}}>
+                                <p>{u.first_name}</p>
+                                <img src={u.avatar} alt=""/>
+                            </div>
+                        )
                     })
-                    :
-                    <h3>❌ Комментарии не подгрузились. Произошла какая-то ошибка. Найди и исправь ее</h3>
-            }
-        </>
+                }</div>
+        </div>
+    )
+}
+
+const Colors = () => {
+    const dispatch = useAppDispatch()
+    const colors = useAppSelector(state => state.app.colors)
+    const error = useAppSelector(state => state.app.error)
+    const isLoading = useAppSelector(state => state.app.isLoading)
+
+    useEffect(() => {
+        dispatch(getColorsTC())
+    }, [])
+
+    return (
+        <div>
+            <h2>Colors</h2>
+            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
+            {isLoading && <Loader/>}
+            <div style={{display: 'flex'}}>
+                {
+                    colors.map(c => {
+                        return (
+                            <div key={c.id} style={{marginRight: '25px'}}>
+                                <p>{c.name}</p>
+                                <div style={{backgroundColor: c.color, width: '128px', height: '30px'}}>
+                                    <b>{c.color}</b>
+                                </div>
+                            </div>
+                        )
+                    })
+                }</div>
+        </div>
     )
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<Provider store={store}> <App/></Provider>)
 
+
 // Описание:
-// ❌ Комментарии не подгрузились. Произошла какая-то ошибка.
-// В данном задании вам нужно найти ошибку и починить приложение.
-// Если сделаете все верно, то увидите комментарии.
-// В качестве ответа указать исправленную строку коду
-// Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
+// Перед вами список Users, список Colors и Loading ...
+// Откройте network и вы увидите что запросы на сервер уходят и возвращаются с данными,
+// но вместо этого пользователь видит на экране Loader.
+// Для обработки успешного результата написана утилитная функция baseSuccessHandler.
+// Ваша задача воспользоваться этой функцией отобразить Users и Colors
+// Что нужно написать вместо XXX и YYY, чтобы реализовать данную задачу?
+// Ответ дайте через пробел.
+// Пример ответа: dispatch(baseSuccessHandler(1,2,3))  dispatch(baseSuccessHandler(3,2,1)
+
+
+// пробовать  dispatch(getUsersAC(res.data.data)) dispatch(getColorsAC(res.data.data))

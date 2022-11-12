@@ -110,6 +110,7 @@ const getColorsTC = (): AppThunk => (dispatch) => {
         })
         .catch((e: AxiosError) => {
             // XXX
+            // dispatch(setError(e.message))
         })
 }
 
@@ -220,3 +221,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Что нужно написать вместо XXX, чтобы ошибки обработались и пользователь их увидел ?
 // Код чинить не нужно.
 // Пример ответа: dispatch(setLoadingAC(false))
+
+
+//  пробовать  dispatch(setError(e.message))

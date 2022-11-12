@@ -220,3 +220,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Что нужно написать вместо XXX и YYY, чтобы реализовать данную задачу?
 // Ответ дайте через пробел.
 // Пример ответа: dispatch(baseSuccessHandler(1,2,3))  dispatch(baseSuccessHandler(3,2,1)
+
+// пробовать  dispatch(getUsersAC(res.data.data)) dispatch(getColorsAC(res.data.data))
