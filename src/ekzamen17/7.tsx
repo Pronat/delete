@@ -93,4 +93,3 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: unknown status isDone
 
 
-//try   type DispatchType = ThunkDispatch<RootState, unknown, ActionsType>

@@ -133,4 +133,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: type InitStateType = typeof initState
 
 
-// пробовать   dispatch(getPostsTC())
+// правильно   dispatch(getPostsTC())

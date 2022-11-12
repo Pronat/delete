@@ -102,4 +102,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // P.S. Эта ошибка из реальной жизни, студенты так часто ошибаются и не могут понять в чем дело.
 
 
-// пробовать  dispatch(getPostsTC())
+// правильно  dispatch(getPostsTC())

@@ -124,4 +124,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: return instance.get<PostType[]>('posts?_limit=10')
 
 
-//пробовать  dispatch(addPostTC())
+//правильно  dispatch(addPostTC())

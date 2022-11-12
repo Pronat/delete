@@ -131,4 +131,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Подсказка. Избавьтесь от всех any и решение придет само собой 😉
 
 
-//try    const currentPost = getState().posts.find((p: any) => p.id === postId)
+//неправильно    const currentPost = getState().posts.find((p: any) => p.id === postId)
