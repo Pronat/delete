@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client';
 import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import axios from 'axios';
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import axios, { AxiosError } from 'axios';
+
 
 // Types
 type PostType = {
@@ -15,75 +16,56 @@ type PostType = {
 
 // Api
 const instance = axios.create({
-    baseURL: 'https://jsonplaceholder.typicode.com/'
+    baseURL: 'https://jsonplaceholder.typicode.com/ '
 })
 
 const postsAPI = {
     getPosts() {
-        return instance.get<PostType[]>('posts?_limit=15')
+        return instance.get<PostType[]>('posts')
     },
-    updatePostTitle(post: PostType) {
-        return instance.put<PostType>(`posts/${post.id}`, post)
-    }
 }
 
-
 // Reducer
-const initState = [] as PostType[]
+const initState = {
+    error: null as string | null,
+    posts: [] as PostType[]
+}
 
 type InitStateType = typeof initState
 
-const postsReducer = (state: InitStateType = initState, action: ActionsType) => {
+const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
         case 'POSTS/GET-POSTS':
-            return action.posts
+            return {...state, posts: action.posts}
 
-        case 'POSTS/UPDATE-POST-TITLE':
-            return state.map((p) => {
-                if (p.id === action.post.id) {
-                    return {...p, title: action.post.title}
-                } else {
-                    return p
-                }
-            })
+        case 'POSTS/SET-ERROR':
+            return {...state, error: action.error}
 
         default:
             return state
     }
 }
 
-const getPostsAC = (posts: PostType[]) => ({type: 'POSTS/GET-POSTS', posts} as const)
-const updatePostTitleAC = (post: PostType) => ({type: 'POSTS/UPDATE-POST-TITLE', post} as const)
-type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof updatePostTitleAC>
 
+const getPostsAC = (posts: PostType[]) => ({type: 'POSTS/GET-POSTS', posts} as const)
+const setError = (error: string | null) => ({type: 'POSTS/SET-ERROR', error} as const)
+type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof setError>
+
+// Thunk
 const getPostsTC = (): AppThunk => (dispatch) => {
     postsAPI.getPosts()
         .then((res) => {
             dispatch(getPostsAC(res.data))
         })
+        .catch((e: AxiosError) => {
+            // dispatch(setError(e.message))
+        })
 }
 
-const updatePostTC = (postId: number): AppThunk => (dispatch, getState: () => RootState) => {
-    try {
-        // const currentPost = getState().find((p: PostType) => p.id === postId)
-        const currentPost = getState().posts.find((p: any) => p.id === postId)
-
-        if (currentPost) {
-            const payload = {...currentPost, title: 'Летим 🚀'}
-            postsAPI.updatePostTitle(payload)
-                .then((res) => {
-                    dispatch(updatePostTitleAC(res.data))
-                })
-        }
-    } catch (e) {
-        alert('Обновить пост не удалось 😢')
-    }
-
-}
 
 // Store
 const rootReducer = combineReducers({
-    posts: postsReducer,
+    app: appReducer,
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
@@ -93,30 +75,32 @@ type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, A
 const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-// App
-const App = () => {
+
+// Components
+export const App = () => {
+
     const dispatch = useAppDispatch()
-    const posts = useAppSelector(state => state.posts)
+
+    const posts = useAppSelector(state => state.app.posts)
+    const error = useAppSelector(state => state.app.error)
 
     useEffect(() => {
         dispatch(getPostsTC())
     }, [])
 
-    const updatePostHandler = (postId: number) => {
-        dispatch(updatePostTC(postId))
-    }
-
     return (
         <>
             <h1>📜 Список постов</h1>
             {
-                posts.map(p => {
-                    return <div key={p.id}>
-                        <b>title</b>: {p.title}
-                        <button onClick={() => updatePostHandler(p.id)}>Обновить пост</button>
-                    </div>
-                })
+                posts.length
+                    ?
+                    posts.map(c => {
+                        return <div key={c.id}><b>Описание</b>: {c.body} </div>
+                    })
+                    :
+                    <h3>❌ Посты не подгрузились. Произошла какая-то ошибка. Выведите сообщение об ошибке на экран</h3>
             }
+            <h2 style={{color: 'red'}}>{!!error && error}</h2>
         </>
     )
 }
@@ -125,8 +109,9 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<Provider store={store}> <App/></Provider>)
 
 // Описание:
-// Попробуйте обновить пост и вы увидите alert с ошибкой.
-// Debugger / network / console.log вам в помощь
-// Найдите ошибку и вставьте исправленную строку кода в качестве ответа.
-// Пример ответа: const payload = {...currentPost, tile: 'Летим 🚀'}
-// Подсказка. Избавьтесь от всех any и решение придет само собой 😉
+// ❌ Посты не подгрузились. Произошла какая-то ошибка.
+// Чинить приложение не нужно (если только для себя, в ответе это не учитывается).
+// Задача: вывести сообщение об ошибке на экран.
+// В качестве ответа указать строку коду, которая позволит это осуществить
+// Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
+

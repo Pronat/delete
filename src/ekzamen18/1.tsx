@@ -54,6 +54,7 @@ const getPhotosTC = (): AppThunk => (dispatch) => {
     photosAPI.getPhotos()
         .then((res) => {
             dispatch(getPhotosAC(res.data))
+            // dispatch(setLoadingAC(false))
         })
 }
 
@@ -116,3 +117,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Какой код нужно написать, чтобы Loader перестал отображаться после получения данных
 // В качестве ответа напишите строку кода.
 // Пример ответа: console.log('stop Loader')
+
+
+//пробовать dispatch(setLoadingAC(false))

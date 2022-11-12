@@ -58,6 +58,7 @@ const getPostsTC = (): AppThunk => (dispatch) => {
             dispatch(getPostsAC(res.data))
         })
         .catch((e: AxiosError) => {
+            // dispatch(setError(e.message))
         })
 }
 
@@ -113,3 +114,6 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Задача: вывести сообщение об ошибке на экран.
 // В качестве ответа указать строку коду, которая позволит это осуществить
 // Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
+
+
+// пробовать  dispatch(setError(e.message))
