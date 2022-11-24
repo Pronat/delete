@@ -18,6 +18,7 @@ export const Login = () => {
 
     return (
         <form>
+            {/*<form onSubmit={formik.handleSubmit}>*/}
             <div>
                 <input
                     name="email"
@@ -58,3 +59,5 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // введенными значениями, но из-за допущенной ошибки форма работает не корректно.
 // Найдите ошибку и исправленную версию строки напишите в качестве ответа.
 // Пример ответа: alert(JSON.stringify(values));
+
+// пробовать   <form onSubmit={formik.handleSubmit}>

@@ -1,33 +1,59 @@
+import { useFormik } from 'formik';
 import React from 'react'
 import ReactDOM from 'react-dom/client';
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-export const Main = () => {
+// Main
+export const Login = () => {
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        onSubmit: values => {
+            alert(JSON.stringify(values));
+        },
+    });
+
     return (
-        <>
-            <h2>✅ Список тудулистов</h2>
-            <h2>📜 Список постов</h2>
-        </>
-    )
+        <form onSubmit={formik.handleSubmit}>
+            <div>
+                <input
+                    name="email"
+                    onChange={formik.handleChange}
+                    value={formik.values.email}
+                    type="text"
+                    placeholder={'Введите email'}
+                />
+            </div>
+            <div>
+                <input
+                    name="password"
+                    onChange={formik.handleChange}
+                    value={formik.values.password}
+                    type="password"
+                    placeholder={'Введите пароль'}
+                />
+            </div>
+            <button type="submit">Отправить</button>
+        </form>
+    );
 }
 
 // App
 export const App = () => {
     return (
         <Routes>
-            <Route path={'/'} element={<Main/>}/>
+            <Route path={''} element={<Login/>}/>
         </Routes>
     )
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(
-    <BrowserRouter><App/></BrowserRouter>
+root.render(<BrowserRouter><App/></BrowserRouter>)
 
-
-)
-
-// Белый экран... Приложение не работает.
-// Найдите и исправьте ошибку, чтобы на экране отобразилось 2 заголовка.
-// Исправленную версию строки напишите в качестве ответа.
-// Пример ответа: <Route path={'/'} component={<Main/>}/>
+// Описание:
+// При заполнении данных формы и их отправке вы должны увидеть alert c
+// введенными значениями, но из-за допущенной ошибки форма работает не корректно.
+// Найдите ошибку и исправленную версию строки напишите в качестве ответа.
+// Пример ответа: alert(JSON.stringify(values));

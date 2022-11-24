@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 
 
 export const PageNotFound = () => {
@@ -27,6 +27,7 @@ export const App = () => {
     return (
         <Routes>
             <Route path={'/'} element={"Стартовая страница"}/>
+            {/*<Route path={'/'} element={<Navigate to={'profile'}/>}/>*/}
             <Route path={'profile'} element={<Profile/>}/>
             <Route path={'*'} element={<PageNotFound/>}/>
         </Routes>
@@ -43,3 +44,5 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // редиректило на страницу Profile.
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: <Route path={'/'} element={'to profile page'}/>
+
+// Пробовать  <Route path={'/'} element={<Navigate to={'profile'}/>}/>

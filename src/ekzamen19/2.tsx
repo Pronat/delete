@@ -17,6 +17,7 @@ export const App = () => {
     return (
         <Routes>
             <Route path={'/'} element={Main}/>
+            {/*<Route path={'/'} element={<Main/>}/>*/}
         </Routes>
     )
 }
@@ -30,3 +31,5 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Найдите и исправьте ошибку, чтобы на экране отобразилось 2 заголовка.
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: type InitStateType = typeof initState
+
+// пробовать   <Route path={'/'} element={<Main/>}/>
