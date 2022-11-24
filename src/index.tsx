@@ -1,79 +1,123 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client';
-import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
+import { applyMiddleware, combineReducers, Dispatch, legacy_createStore as createStore } from 'redux'
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import axios, { AxiosError } from 'axios';
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import axios, { AxiosError } from 'axios'
 
-// Types
-type PhotoType = {
-    albumId: number
+// TYPES
+type UserType = {
+    avatar: string
+    email: string
+    first_name: string
+    id: 1
+    last_name: string
+}
+
+type ColorType = {
+    color: string
     id: number
-    title: string
-    url: string
-    thumbnailUrl: string
+    name: string
+    pantone_value: string
+    year: number
 }
 
-// Api
-const instance = axios.create({
-    baseURL: 'https://jsonplaceholder.typicode.com/'
-})
+type CommonResponseType<T> = {
+    total: number
+    total_pages: number
+    page: number
+    per_page: number
+    support: {
+        url: string
+        text: string
+    }
+    data: T
+}
 
-const photosAPI = {
-    async getPhotos() {
-        // Имитация длительного запроса, чтобы была видна крутилка
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        return instance.get<PhotoType[]>('photos1?_limit=3')
+// API
+const instance = axios.create({baseURL: 'https://reqres.in/api/'})
+
+const reqresAPI = {
+    getUsers() {
+        return instance.get<CommonResponseType<UserType[]>>('$/users?delay=2')
     },
+    getColors() {
+        return instance.get<CommonResponseType<ColorType[]>>('$/colors?delay=2')
+    }
 }
-
 
 // Reducer
 const initState = {
     isLoading: false,
     error: null as string | null,
-    photos: [] as PhotoType[]
+    users: [] as UserType[],
+    colors: [] as ColorType[],
 }
 
 type InitStateType = typeof initState
 
 const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
-        case 'PHOTO/GET-PHOTOS':
-            return {...state, photos: action.photos}
-        case 'PHOTO/IS-LOADING':
+        case 'APP/GET-USERS':
+            return {...state, users: action.users}
+        case 'APP/GET-COLORS':
+            return {...state, colors: action.colors}
+        case 'APP/IS-LOADING':
             return {...state, isLoading: action.isLoading}
-        case 'PHOTO/SET-ERROR':
+        case 'APP/SET-ERROR':
             return {...state, error: action.error}
         default:
             return state
     }
 }
 
-const getPhotosAC = (photos: PhotoType[]) => ({type: 'PHOTO/GET-PHOTOS', photos} as const)
-const setLoadingAC = (isLoading: boolean) => ({type: 'PHOTO/IS-LOADING', isLoading} as const)
-const setError = (error: string | null) => ({type: 'PHOTO/SET-ERROR', error} as const)
+const getUsersAC = (users: UserType[]) => ({type: 'APP/GET-USERS', users} as const)
+const getColorsAC = (colors: ColorType[]) => ({type: 'APP/GET-COLORS', colors} as const)
+const setLoadingAC = (isLoading: boolean) => ({type: 'APP/IS-LOADING', isLoading} as const)
+const setError = (error: string | null) => ({type: 'APP/SET-ERROR', error} as const)
 type ActionsType =
-    | ReturnType<typeof getPhotosAC>
+    | ReturnType<typeof getUsersAC>
+    | ReturnType<typeof getColorsAC>
     | ReturnType<typeof setLoadingAC>
     | ReturnType<typeof setError>
 
-const getPhotosTC = (): AppThunk => (dispatch) => {
+// Utils functions
+function baseErrorHandler(dispatch: Dispatch, message: string) {
+    dispatch(setError(message))
+    dispatch(setLoadingAC(false))
+}
+
+
+// Thunk
+const getUsersTC = (): AppThunk => (dispatch) => {
     dispatch(setLoadingAC(true))
-    photosAPI.getPhotos()
+    reqresAPI.getUsers()
         .then((res) => {
-            dispatch(getPhotosAC(res.data))
+            dispatch(getUsersAC(res.data.data))
+            dispatch(setLoadingAC(false))
         })
         .catch((e: AxiosError) => {
-            dispatch(setError(e.message))
-
+            // XXX
         })
-        .finally( () => {dispatch(setLoadingAC(false))})
+}
+
+const getColorsTC = (): AppThunk => (dispatch) => {
+    dispatch(setLoadingAC(true))
+    reqresAPI.getColors()
+        .then((res) => {
+            dispatch(getColorsAC(res.data.data))
+            dispatch(setLoadingAC(false))
+        })
+        .catch((e: AxiosError) => {
+            // XXX
+            dispatch(setError(e.message))
+            dispatch(setLoadingAC(false))
+        })
 }
 
 // Store
 const rootReducer = combineReducers({
-    app: appReducer
+    app: appReducer,
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
@@ -84,6 +128,7 @@ const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 
+// COMPONENTS
 // Loader
 export const Loader = () => {
     return (
@@ -91,49 +136,93 @@ export const Loader = () => {
     )
 }
 
-// App
+
 const App = () => {
-    const dispatch = useAppDispatch()
-
-    const photos = useAppSelector(state => state.app.photos)
-    const isLoading = useAppSelector(state => state.app.isLoading)
-    const error = useAppSelector(state => state.app.error)
-
-    const getPhotosHandler = () => {
-        dispatch(getPhotosTC())
-    };
-
     return (
         <>
-            <h1>📸 Фото</h1>
-            <h2 style={{color: 'red'}}>{!!error && error}</h2>
-            {isLoading && <Loader/>}
-            {
-                photos.map(p => {
-                    return <div key={p.id}>
-                        <b>title</b>: {p.title}
-                        <div><img src={p.thumbnailUrl} alt=""/></div>
-                    </div>
-                })
-            }
-            <button onClick={getPhotosHandler}>Подгрузить фотографии</button>
+            <h1>Reqres API</h1>
+            <Users/>
+            <Colors/>
         </>
     )
 }
 
+const Users = () => {
+    const dispatch = useAppDispatch()
+    const users = useAppSelector(state => state.app.users)
+    const error = useAppSelector(state => state.app.error)
+    const isLoading = useAppSelector(state => state.app.isLoading)
+
+    useEffect(() => {
+        dispatch(getUsersTC())
+    }, [])
+
+    return (
+        <div>
+            <h2>Users</h2>
+            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
+            {isLoading && <Loader/>}
+            <div style={{display: 'flex'}}>
+                {
+                    users.map(u => {
+                        return (
+                            <div key={u.id} style={{marginRight: '25px'}}>
+                                <p>{u.first_name}</p>
+                                <img src={u.avatar} alt=""/>
+                            </div>
+                        )
+                    })
+                }</div>
+        </div>
+    )
+}
+
+const Colors = () => {
+    const dispatch = useAppDispatch()
+    const colors = useAppSelector(state => state.app.colors)
+    const error = useAppSelector(state => state.app.error)
+    const isLoading = useAppSelector(state => state.app.isLoading)
+
+    useEffect(() => {
+        dispatch(getColorsTC())
+    }, [])
+
+    return (
+        <div>
+            <h2>Colors</h2>
+            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
+            {isLoading && <Loader/>}
+            <div style={{display: 'flex'}}>
+                {
+                    colors.map(c => {
+                        return (
+                            <div key={c.id} style={{marginRight: '25px'}}>
+                                <p>{c.name}</p>
+                                <div style={{backgroundColor: c.color, width: '128px', height: '30px'}}>
+                                    <b>{c.color}</b>
+                                </div>
+                            </div>
+                        )
+                    })
+                }</div>
+        </div>
+    )
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<Provider store={store}> <App/></Provider>)
 
 
 // Описание:
-// При нажатии на кнопку "Подгрузить фотографии" появляется Loading... и сообщение об ошибке.
-// Ваша задача состоит в том, чтобы спрятать Loader независимо от того, как завершится запрос на сервер.
-// Т.е. если ответ придет успешный - Loader убираем
-//      если ответ придет с ошибкой - Loader тоже убираем.
-// Напишите код, с помощью которого можно реализовать данную задачу
-// В качестве ответа напишите строку кода.
-// Пример ответа: .then(() =>  dispatch(getPhotosAC(res.data)))
+// Перед вами заголовки Users, Colors и Loading ...
+// Откройте network и вы увидите что запросы падают с ошибками,
+// но в коде этот никак не обрабатывается.
+// Для обработки ошибок написана утилитная функция baseErrorHandler.
+// Ваша задача воспользоваться этой функцией и вывести ошибки на экран.
+// Что нужно написать вместо XXX, чтобы ошибки обработались и пользователь их увидел ?
+// Код чинить не нужно.
+// Пример ответа: dispatch(setLoadingAC(false))
 
-// неправильно   dispatch(setLoadingAC(false))
-// попробовать    .finally(() => dispatch(setLoadingAC(false)))
+
+//  неправильно  dispatch(setError(e.message))
+//  попробовать  dispatch(setError(e.message)) dispatch(setLoadingAC(false))

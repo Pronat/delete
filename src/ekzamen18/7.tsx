@@ -224,3 +224,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 
 
 //  неправильно  dispatch(setError(e.message))
+// еще раз попробовать
