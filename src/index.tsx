@@ -1,127 +1,70 @@
-import { useFormik } from 'formik';
 import React, { useEffect } from 'react'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import axios, { AxiosError } from 'axios';
-import { applyMiddleware, combineReducers, legacy_createStore as createStore, Dispatch } from 'redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux';
 import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import axios from 'axios';
 
 
-// Types
-type NullableType<T> = null | T
-type UndefinedType<T> = undefined | T
+// Utils
+console.log = () => {
+};
 
-type UserType = {
-    avatar: string
-    email: string
-    first_name: string
-    id: 1
-    last_name: string
-}
-
-type LoginFieldsType = {
-    email: string
-    password: string
-}
-
-// API
+// Api
 const instance = axios.create({
-    baseURL: 'https://reqres.in/api/'
+    baseURL: 'xxx'
 })
 
-const reqresAPI = {
+const api = {
     getUsers() {
-        return instance.get('users?delay=1&per_page=12')
-    },
-    login(data: LoginFieldsType) {
-        return instance.post('login?delay=1', data)
-    },
+        return instance.get('xxx')
+    }
 }
 
 
 // Reducer
 const initState = {
     isLoading: false,
-    error: null as NullableType<string>,
-    isLoggedIn: false,
-    randomUser: null as NullableType<UserType>
+    users: [] as any[]
 }
 
 type InitStateType = typeof initState
 
 const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
-        case 'APP/SET-RANDOM-USER':
-            return {...state, randomUser: action.user}
-        case 'APP/SET-IS-LOGGED-IN':
-            return {...state, isLoggedIn: action.isLoggedIn}
+        case 'APP/SET-USERS':
+            debugger
+            /* 1 */
+            return {...state, users: action.users}
         case 'APP/IS-LOADING':
+            debugger
+            /* 2 */
             return {...state, isLoading: action.isLoading}
-        case 'APP/SET-ERROR':
-            return {...state, error: action.error}
         default:
             return state
     }
 }
 
 // Actions
-const setRandomUserAC = (user: UserType) => ({type: 'APP/SET-RANDOM-USER', user} as const)
-const setIsLoggedIn = (isLoggedIn: boolean) => ({type: 'APP/SET-IS-LOGGED-IN', isLoggedIn} as const)
+const setUsersAC = (users: any[]) => ({type: 'APP/SET-USERS', users} as const)
 const setLoadingAC = (isLoading: boolean) => ({type: 'APP/IS-LOADING', isLoading} as const)
-const setError = (error: string | null) => ({type: 'APP/SET-ERROR', error} as const)
-type ActionsType =
-    | ReturnType<typeof setRandomUserAC>
-    | ReturnType<typeof setIsLoggedIn>
-    | ReturnType<typeof setLoadingAC>
-    | ReturnType<typeof setError>
+type ActionsType = | ReturnType<typeof setUsersAC> | ReturnType<typeof setLoadingAC>
 
-
-// Utils
-const thunkFinallyHandler = (dispatch: Dispatch) => {
-    dispatch(setLoadingAC(false))
-    setTimeout(() => {
-        dispatch(setError(null))
-    }, 3000)
-}
 
 // Thunk
 const getUsersTC = (): AppThunk => (dispatch) => {
+    debugger
+    /* 3 */
     dispatch(setLoadingAC(true))
-
-    const getRandomUser = (users: UserType[]): UndefinedType<UserType> => {
-        const randomUserId = Math.floor(Math.random() * 12) + 1
-        return users.find(u => u.id === randomUserId)
-    }
-
-    reqresAPI.getUsers()
+    api.getUsers()
         .then((res) => {
-            const user = getRandomUser(res.data.data)
-            if (user) {
-                dispatch(setRandomUserAC(user))
-            }
-        })
-        .catch((e: AxiosError) => {
-            dispatch(setError(e.message))
-        })
-        .finally(() => {
-            thunkFinallyHandler(dispatch)
-        })
-}
-
-const loginTC = (values: LoginFieldsType): AppThunk => (dispatch) => {
-    dispatch(setLoadingAC(true))
-    reqresAPI.login(values)
-        .then((res) => {
-            dispatch(setIsLoggedIn(true))
-            alert('Вы залогинились успешно')
-        })
-        .catch((e) => {
-            const error = e.response ? (e.response?.data.error || 'Some error') : e.message
-            dispatch(setError(error))
-        })
-        .finally(() => {
-            thunkFinallyHandler(dispatch)
+            debugger
+            /* 4 */
+            dispatch(setLoadingAC(false))
+            debugger
+            /* 5 */
+            dispatch(setUsersAC(res.data.data))
         })
 }
 
@@ -140,66 +83,50 @@ const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 // Loader
 export const Loader = () => {
-    return <h1>Loading ...</h1>
+    debugger
+    /* 6 */
+    return (
+        <h1>Loading ...</h1>
+    )
 }
 
-// Profile
-export const Profile = () => {
-    return <h2>😎 Profile</h2>
-}
 
 // Login
 export const Login = () => {
+    debugger
+    /* 7 */
 
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-
-    const randomUser = useAppSelector(state => state.app.randomUser)
-    const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)
-    const error = useAppSelector(state => state.app.error)
+    const users = useAppSelector(state => state.app.users)
     const isLoading = useAppSelector(state => state.app.isLoading)
 
-    useEffect(() => {
-        dispatch(getUsersTC())
-    }, [])
-
-    const formik = useFormik({
-        initialValues: {
-            email: randomUser?.email ?? '',
-            password: '',
-        },
-        enableReinitialize: true,
-        onSubmit: values => {
-            dispatch(loginTC(values))
-        }
-    });
-    if (isLoggedIn) return (<Navigate to={'/profile'} />)
     return (
         <div>
-            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
             {isLoading && <Loader/>}
-            <form onSubmit={formik.handleSubmit}>
-                <div>
-                    <input placeholder={'Введите email'}
-                           {...formik.getFieldProps('email')}/>
-                </div>
-                <div>
-                    <input type={'password'}
-                           placeholder={'Введите пароль'}
-                           {...formik.getFieldProps('password')}/>
-                </div>
-                <button type="submit">Залогиниться</button>
-            </form>
+            {users.map((u) => <p key={u.id}>{u.email}</p>)}
+            <h1>В данном задании на экран смотреть не нужно. Рекомендуем взять ручку, листик и последовательно, спокойно
+                расставить цифры в нужном порядке. Прежде чем давать ответ обязательно посчитайте к-во цифр и сверьте с
+                подсказкой. Удачи 🚀
+            </h1>
         </div>
     );
 }
 
 // App
 export const App = () => {
+    debugger
+    /* 8 */
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        debugger
+        /* 9 */
+        dispatch(getUsersTC())
+    }, [])
+    debugger
+    /* 10 */
     return (
         <Routes>
             <Route path={''} element={<Login/>}/>
-            <Route path={'profile'} element={<Profile/>}/>
         </Routes>
     )
 }
@@ -207,12 +134,10 @@ export const App = () => {
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<Provider store={store}><BrowserRouter><App/></BrowserRouter></Provider>)
 
-
 // Описание:
-// ❗ Логин вводить не нужно (из-за Api можно вводить только определенные email).
-// Введите любой пароль и попробуйте залогиниться.
-// Если вы увидели alert с успешным сообщением -
-// это значит, что запрос успешно прошел.
-// Задача: при успешной логинизации, редиректнуть пользователя на страницу Profile.
-// Напишите правильную строку кода
-// Пример ответа:  console.log('If login => redirect to profile')
+// Задача: напишите в какой последовательности вызовутся числа при успешном запросе.
+// Подсказка: будет 13 чисел.
+// Ответ дайте через пробел.
+// Пример ответа:    1 2 3 4 5 6 7 8 9 10 1 2 3
+
+// пробовать  8 10 7 9 3 2 7 6 9 3 4 5 1

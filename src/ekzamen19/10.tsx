@@ -130,3 +130,5 @@ root.render(<Provider store={store}><BrowserRouter><App/></BrowserRouter></Provi
 // Подсказка: будет 13 чисел.
 // Ответ дайте через пробел.
 // Пример ответа:    1 2 3 4 5 6 7 8 9 10 1 2 3
+
+// пробовать  8 10 7 9 3 2 7 6 9 3 4 5 1
