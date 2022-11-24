@@ -58,6 +58,7 @@ export const Login = () => {
             <div>
                 <input
                     name="password"
+                    // name="phone"
                     onChange={formik.handleChange}
                     value={formik.values.phone}
                     placeholder={'Введите телефон'}
@@ -85,3 +86,5 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Пользователи жалуются на поле ввода "Телефона"
 // Найдите в коде ошибку. Исправленную версию строки напишите в качестве ответа.
 // Пример ответа:  value={formik.values.phone}
+
+// пробовать   name="phone"
