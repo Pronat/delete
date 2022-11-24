@@ -32,6 +32,7 @@ export const Login = () => {
                 <input placeholder={'Введите имя'} {...formik.getFieldProps('firstName')}/>
             </div>
             <button type="submit" disabled={!(formik.isValid && formik.dirty)}>Отправить</button>
+            {/*<button type="submit" disabled={!(formik.values.firstName.length > 4)}>Отправить</button>*/}
         </form>
     );
 }
@@ -56,3 +57,5 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // В качестве ответа напишите полностью строку кода с условием.
 // Пример ответа: return errors.firstName = 'Must be 5 characters or more'
 // ❗ Сторонние библиотеки (например yup) использовать запрещено
+
+// пробовать   <button type="submit" disabled={!(formik.values.firstName.length > 4)}>Отправить</button>

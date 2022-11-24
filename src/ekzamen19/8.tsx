@@ -174,6 +174,8 @@ export const Login = () => {
         }
     });
 
+    // if (isLoggedIn) return (<Navigate to={'/profile'} />)
+
     return (
         <div>
             {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
@@ -216,3 +218,5 @@ root.render(<Provider store={store}><BrowserRouter><App/></BrowserRouter></Provi
 // Задача: при успешной логинизации, редиректнуть пользователя на страницу Profile.
 // Напишите правильную строку кода
 // Пример ответа:  console.log('If login => redirect to profile')
+
+// пробовать     if (isLoggedIn) return (<Navigate to={'/profile'} />)

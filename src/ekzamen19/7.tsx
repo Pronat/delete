@@ -44,6 +44,7 @@ export const Login = () => {
             <div>
                 <input placeholder={'Введите email'}{...formik.getFieldProps('email')}/>
                 {getTrue() && <div style={{color: 'red'}}>ERROR</div>}
+                {/*{formik.errors.email && formik.touched.email && <div style={{color: 'red'}}>{formik.errors.email}</div>}*/}
             </div>
             <button type="submit">Отправить</button>
         </form>
@@ -70,3 +71,5 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // 3) Сообщение должно показываться только в том случае, когда мы взаимодействовали с полем.
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: {true && <div style={{color: 'red'}}>error.email</div>}
+
+// пробовать  {formik.errors.email && formik.touched.email && <div style={{color: 'red'}}>{formik.errors.email}</div>}
