@@ -222,4 +222,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: dispatch(baseSuccessHandler(1,2,3))  dispatch(baseSuccessHandler(3,2,1)
 
 // неправильно  dispatch(getUsersAC(res.data.data)) dispatch(getColorsAC(res.data.data))
-// попробовать   dispatch(getUsersAC(res.data.data)) dispatch(setLoadingAC(false)) dispatch(getColorsAC(res.data.data)) dispatch(setLoadingAC(false))
+// неправильно   dispatch(getUsersAC(res.data.data)) dispatch(setLoadingAC(false)) dispatch(getColorsAC(res.data.data)) dispatch(setLoadingAC(false))

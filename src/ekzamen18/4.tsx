@@ -149,3 +149,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 
 
 // неправильно  dispatch(setError(e.error))
+//неправильно  alert(e.response.data.error)
+//     (или вместе две строки)

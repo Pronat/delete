@@ -1,123 +1,108 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client';
-import { applyMiddleware, combineReducers, Dispatch, legacy_createStore as createStore } from 'redux'
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import axios, { AxiosError } from 'axios'
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import axios from 'axios';
 
-// TYPES
-type UserType = {
-    avatar: string
-    email: string
-    first_name: string
-    id: 1
-    last_name: string
+
+// Types
+type TodoDomainType = TodoType & {
+    isDisabled: boolean
 }
 
-type ColorType = {
-    color: string
+type TodoType = {
     id: number
-    name: string
-    pantone_value: string
-    year: number
+    title: string
+    completed: boolean
+    userId: number
 }
 
-type CommonResponseType<T> = {
-    total: number
-    total_pages: number
-    page: number
-    per_page: number
-    support: {
-        url: string
-        text: string
-    }
-    data: T
-}
+// Api
+const instance = axios.create({baseURL: 'https://jsonplaceholder.typicode.com/'})
 
-// API
-const instance = axios.create({baseURL: 'https://reqres.in/api/'})
-
-const reqresAPI = {
-    getUsers() {
-        return instance.get<CommonResponseType<UserType[]>>('$/users?delay=2')
+const todosAPI = {
+    getTodos() {
+        return instance.get('todos?_limit=15')
     },
-    getColors() {
-        return instance.get<CommonResponseType<ColorType[]>>('$/colors?delay=2')
+    async deleteTodo(id: number) {
+        // Имитация длительного запроса, чтобы была видна крутилка
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        return instance.delete(`todos/${id}`)
     }
 }
+
 
 // Reducer
 const initState = {
     isLoading: false,
-    error: null as string | null,
-    users: [] as UserType[],
-    colors: [] as ColorType[],
+    todos: [] as TodoDomainType[]
 }
 
 type InitStateType = typeof initState
 
-const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
+const todosReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
-        case 'APP/GET-USERS':
-            return {...state, users: action.users}
-        case 'APP/GET-COLORS':
-            return {...state, colors: action.colors}
-        case 'APP/IS-LOADING':
+        case 'TODOS/GET-TODOS':
+            return {
+                ...state, todos: action.todos.map(t => {
+                    return {...t, isDisabled: false}
+                })
+            }
+
+        case 'TODOS/DELETE-TODO':
+            return {...state, todos: state.todos.filter(t => t.id !== action.id)}
+
+        case 'TODOS/IS-LOADING':
             return {...state, isLoading: action.isLoading}
-        case 'APP/SET-ERROR':
-            return {...state, error: action.error}
+
+        case 'TODOS/IS-DISABLED':
+            return {
+                ...state, todos: state.todos.map((t) => {
+                    if (t.id === action.id) {
+                        return {...t, isDisabled: action.isDisabled}
+                    } else {
+                        return t
+                    }
+                })
+            }
+
         default:
             return state
     }
 }
 
-const getUsersAC = (users: UserType[]) => ({type: 'APP/GET-USERS', users} as const)
-const getColorsAC = (colors: ColorType[]) => ({type: 'APP/GET-COLORS', colors} as const)
-const setLoadingAC = (isLoading: boolean) => ({type: 'APP/IS-LOADING', isLoading} as const)
-const setError = (error: string | null) => ({type: 'APP/SET-ERROR', error} as const)
+const getTodosAC = (todos: TodoType[]) => ({type: 'TODOS/GET-TODOS', todos} as const)
+const deleteTodoAC = (id: number) => ({type: 'TODOS/DELETE-TODO', id} as const)
+const setLoadingAC = (isLoading: boolean) => ({type: 'TODOS/IS-LOADING', isLoading} as const)
+const setIsDisabled = (isDisabled: boolean, id: number) => ({type: 'TODOS/IS-DISABLED', isDisabled, id} as const)
 type ActionsType =
-    | ReturnType<typeof getUsersAC>
-    | ReturnType<typeof getColorsAC>
+    | ReturnType<typeof getTodosAC>
+    | ReturnType<typeof deleteTodoAC>
     | ReturnType<typeof setLoadingAC>
-    | ReturnType<typeof setError>
-
-// Utils functions
-function baseErrorHandler(dispatch: Dispatch, message: string) {
-    dispatch(setError(message))
-    dispatch(setLoadingAC(false))
-}
-
+    | ReturnType<typeof setIsDisabled>
 
 // Thunk
-const getUsersTC = (): AppThunk => (dispatch) => {
-    dispatch(setLoadingAC(true))
-    reqresAPI.getUsers()
+const getTodosTC = (): AppThunk => (dispatch) => {
+    todosAPI.getTodos()
         .then((res) => {
-            dispatch(getUsersAC(res.data.data))
-            dispatch(setLoadingAC(false))
-        })
-        .catch((e: AxiosError) => {
-            // XXX
+            dispatch(getTodosAC(res.data))
         })
 }
 
-const getColorsTC = (): AppThunk => (dispatch) => {
+const deleteTodoTC = (id: number): AppThunk => (dispatch) => {
+    dispatch(setIsDisabled(true, id))
     dispatch(setLoadingAC(true))
-    reqresAPI.getColors()
+    todosAPI.deleteTodo(id)
         .then((res) => {
-            dispatch(getColorsAC(res.data.data))
-            dispatch(setLoadingAC(false))
-        })
-        .catch((e: AxiosError) => {
-            // XXX
-            dispatch(setError(e.message))
+            dispatch(deleteTodoAC(id))
             dispatch(setLoadingAC(false))
         })
 }
 
 // Store
 const rootReducer = combineReducers({
-    app: appReducer,
+    todos: todosReducer,
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
@@ -128,7 +113,6 @@ const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 
-// COMPONENTS
 // Loader
 export const Loader = () => {
     return (
@@ -136,75 +120,43 @@ export const Loader = () => {
     )
 }
 
-
+// App
 const App = () => {
-    return (
-        <>
-            <h1>Reqres API</h1>
-            <Users/>
-            <Colors/>
-        </>
-    )
-}
-
-const Users = () => {
     const dispatch = useAppDispatch()
-    const users = useAppSelector(state => state.app.users)
-    const error = useAppSelector(state => state.app.error)
-    const isLoading = useAppSelector(state => state.app.isLoading)
+    const todos = useAppSelector(state => state.todos.todos)
+    const isLoading = useAppSelector(state => state.todos.isLoading)
 
     useEffect(() => {
-        dispatch(getUsersTC())
+        dispatch(getTodosTC())
     }, [])
+
+    const deleteTodoHandler = (id: number) => {
+        dispatch(deleteTodoTC(id))
+    };
 
     return (
         <div>
-            <h2>Users</h2>
-            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
-            {isLoading && <Loader/>}
-            <div style={{display: 'flex'}}>
+            <div style={{position: 'absolute', top: '0px'}}>
+                {isLoading && <Loader/>}
+            </div>
+            <div style={{marginTop: '100px'}}>
+                <h2>✅ Список тудулистов</h2>
                 {
-                    users.map(u => {
+                    todos.map((t) => {
                         return (
-                            <div key={u.id} style={{marginRight: '25px'}}>
-                                <p>{u.first_name}</p>
-                                <img src={u.avatar} alt=""/>
+                            <div style={t.completed ? {color: 'grey'} : {}} key={t.id}>
+                                <input type="checkbox" defaultChecked={t.completed}/>
+                                <b>Описание</b>: {t.title}
+                                <button
+                                    style={{marginLeft: '20px'}}
+                                    onClick={() => deleteTodoHandler(t.id)}>
+                                    Удалить тудулист
+                                </button>
                             </div>
                         )
                     })
-                }</div>
-        </div>
-    )
-}
-
-const Colors = () => {
-    const dispatch = useAppDispatch()
-    const colors = useAppSelector(state => state.app.colors)
-    const error = useAppSelector(state => state.app.error)
-    const isLoading = useAppSelector(state => state.app.isLoading)
-
-    useEffect(() => {
-        dispatch(getColorsTC())
-    }, [])
-
-    return (
-        <div>
-            <h2>Colors</h2>
-            {!!error && <h2 style={{color: 'red'}}>{error}</h2>}
-            {isLoading && <Loader/>}
-            <div style={{display: 'flex'}}>
-                {
-                    colors.map(c => {
-                        return (
-                            <div key={c.id} style={{marginRight: '25px'}}>
-                                <p>{c.name}</p>
-                                <div style={{backgroundColor: c.color, width: '128px', height: '30px'}}>
-                                    <b>{c.color}</b>
-                                </div>
-                            </div>
-                        )
-                    })
-                }</div>
+                }
+            </div>
         </div>
     )
 }
@@ -212,17 +164,13 @@ const Colors = () => {
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<Provider store={store}> <App/></Provider>)
 
-
 // Описание:
-// Перед вами заголовки Users, Colors и Loading ...
-// Откройте network и вы увидите что запросы падают с ошибками,
-// но в коде этот никак не обрабатывается.
-// Для обработки ошибок написана утилитная функция baseErrorHandler.
-// Ваша задача воспользоваться этой функцией и вывести ошибки на экран.
-// Что нужно написать вместо XXX, чтобы ошибки обработались и пользователь их увидел ?
-// Код чинить не нужно.
-// Пример ответа: dispatch(setLoadingAC(false))
+// Перед вами список тудулистов.
+// Откройте network и нажмите на кнопку удалить тудулист несколько раз подряд.
+// Вы увидите как удаляется один и тот же тудулист несколько раз подряд... Нехорошо...
+// Т.к. это учебная апишка, ошибки не падают, но в жизни такое допускать нельзя !
+// Ваша задача задизаблить кнопку нужного тудулиста при нажатии на кнопку удаления
+// Необходимую строку кода для решения этой задачи напишите в качестве ответа.
+// Пример ответа: style={{marginRight: '20px'}}
 
 
-//  неправильно  dispatch(setError(e.message))
-//  попробовать  dispatch(setError(e.message)) dispatch(setLoadingAC(false))
