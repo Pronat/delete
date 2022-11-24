@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client';
-import { Route, Routes } from 'react-router-dom'
+import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 export const Main = () => {
     return (
@@ -21,7 +21,11 @@ export const App = () => {
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<App/>)
+root.render(
+    <BrowserRouter><App/></BrowserRouter>
+
+
+)
 
 // Белый экран... Приложение не работает.
 // Найдите и исправьте ошибку, чтобы на экране отобразилось 2 заголовка.
