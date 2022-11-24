@@ -134,4 +134,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // В качестве ответа напишите строку кода.
 // Пример ответа: .then(() =>  dispatch(getPhotosAC(res.data)))
 
-// пробовать   dispatch(setLoadingAC(false))
+// неправильно   dispatch(setLoadingAC(false))
+// попробовать .finally(() => dispatch(setLoadingAC(false)))

@@ -119,4 +119,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: console.log('stop Loader')
 
 
-//пробовать dispatch(setLoadingAC(false))
+//правильно dispatch(setLoadingAC(false))

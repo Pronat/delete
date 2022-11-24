@@ -109,4 +109,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
 
 
-// пробовать  return instance.get<CommentType[]>('comments')
+// правильно  return instance.get<CommentType[]>('comments')

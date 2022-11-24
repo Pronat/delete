@@ -148,4 +148,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // ❗ Типизировать ошибку не надо, т.к. там есть много нюансов, о которых вы узнаете позже
 
 
-// пробовать  dispatch(setError(e.error))
+// неправильно  dispatch(setError(e.error))

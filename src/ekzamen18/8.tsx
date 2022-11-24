@@ -221,4 +221,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Ответ дайте через пробел.
 // Пример ответа: dispatch(baseSuccessHandler(1,2,3))  dispatch(baseSuccessHandler(3,2,1)
 
-// пробовать  dispatch(getUsersAC(res.data.data)) dispatch(getColorsAC(res.data.data))
+// неправильно  dispatch(getUsersAC(res.data.data)) dispatch(getColorsAC(res.data.data))

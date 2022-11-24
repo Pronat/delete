@@ -223,4 +223,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: dispatch(setLoadingAC(false))
 
 
-//  пробовать  dispatch(setError(e.message))
+//  неправильно  dispatch(setError(e.message))

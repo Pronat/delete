@@ -117,4 +117,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
 
 
-// пробовать  dispatch(setError(e.message))
+// правильно  dispatch(setError(e.message))
