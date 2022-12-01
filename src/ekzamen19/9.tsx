@@ -115,4 +115,4 @@ root.render(<Provider store={store}><BrowserRouter><App/></BrowserRouter></Provi
 // Ответ дайте через пробел.
 // Пример ответа:    1 2 3 4 5 6 7 8 9 1 2
 
-// пробовать  7 9 5 6 8 3 1 4 2
+// неправильно  7 9 5 6 8 3 1 4 2

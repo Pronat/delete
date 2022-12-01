@@ -32,4 +32,4 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: type InitStateType = typeof initState
 
-// пробовать   <Route path={'/'} element={<Main/>}/>
+// правильно   <Route path={'/'} element={<Main/>}/>

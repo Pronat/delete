@@ -1,41 +1,25 @@
 import { useFormik } from 'formik';
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import axios, { AxiosError } from 'axios';
-import { applyMiddleware, combineReducers, legacy_createStore as createStore, Dispatch } from 'redux';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import axios from 'axios';
+import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux';
 import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 
 // Types
-type NullableType<T> = null | T
-type UndefinedType<T> = undefined | T
-
-type UserType = {
-    avatar: string
-    email: string
-    first_name: string
-    id: 1
-    last_name: string
-}
-
 type LoginFieldsType = {
     email: string
     password: string
 }
 
 // API
-const instance = axios.create({
-    baseURL: 'https://reqres.in/api/'
-})
+const instance = axios.create({baseURL: 'https://exams-frontend.kimitsu.it-incubator.ru/api/'})
 
-const reqresAPI = {
-    getUsers() {
-        return instance.get('users?delay=1&per_page=12')
-    },
+const api = {
     login(data: LoginFieldsType) {
-        return instance.post('login?delay=1', data)
+        return instance.post('auth/login', data)
     },
 }
 
@@ -43,17 +27,14 @@ const reqresAPI = {
 // Reducer
 const initState = {
     isLoading: false,
-    error: null as NullableType<string>,
+    error: null as string | null,
     isLoggedIn: false,
-    randomUser: null as NullableType<UserType>
 }
 
 type InitStateType = typeof initState
 
 const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
-        case 'APP/SET-RANDOM-USER':
-            return {...state, randomUser: action.user}
         case 'APP/SET-IS-LOGGED-IN':
             return {...state, isLoggedIn: action.isLoggedIn}
         case 'APP/IS-LOADING':
@@ -66,62 +47,31 @@ const appReducer = (state: InitStateType = initState, action: ActionsType): Init
 }
 
 // Actions
-const setRandomUserAC = (user: UserType) => ({type: 'APP/SET-RANDOM-USER', user} as const)
 const setIsLoggedIn = (isLoggedIn: boolean) => ({type: 'APP/SET-IS-LOGGED-IN', isLoggedIn} as const)
 const setLoadingAC = (isLoading: boolean) => ({type: 'APP/IS-LOADING', isLoading} as const)
 const setError = (error: string | null) => ({type: 'APP/SET-ERROR', error} as const)
 type ActionsType =
-    | ReturnType<typeof setRandomUserAC>
     | ReturnType<typeof setIsLoggedIn>
     | ReturnType<typeof setLoadingAC>
     | ReturnType<typeof setError>
 
 
-// Utils
-const thunkFinallyHandler = (dispatch: Dispatch) => {
-    dispatch(setLoadingAC(false))
-    setTimeout(() => {
-        dispatch(setError(null))
-    }, 3000)
-}
-
 // Thunk
-const getUsersTC = (): AppThunk => (dispatch) => {
-    dispatch(setLoadingAC(true))
-
-    const getRandomUser = (users: UserType[]): UndefinedType<UserType> => {
-        const randomUserId = Math.floor(Math.random() * 12) + 1
-        return users.find(u => u.id === randomUserId)
-    }
-
-    reqresAPI.getUsers()
-        .then((res) => {
-            const user = getRandomUser(res.data.data)
-            if (user) {
-                dispatch(setRandomUserAC(user))
-            }
-        })
-        .catch((e: AxiosError) => {
-            dispatch(setError(e.message))
-        })
-        .finally(() => {
-            thunkFinallyHandler(dispatch)
-        })
-}
-
 const loginTC = (values: LoginFieldsType): AppThunk => (dispatch) => {
     dispatch(setLoadingAC(true))
-    reqresAPI.login(values)
+    api.login(values)
         .then((res) => {
             dispatch(setIsLoggedIn(true))
             alert('Вы залогинились успешно')
         })
         .catch((e) => {
-            const error = e.response ? (e.response?.data.error || 'Some error') : e.message
-            dispatch(setError(error))
+            dispatch(setError(e.response.data.errors))
         })
         .finally(() => {
-            thunkFinallyHandler(dispatch)
+            dispatch(setLoadingAC(false))
+            setTimeout(() => {
+                dispatch(setError(null))
+            }, 3000)
         })
 }
 
@@ -154,27 +104,19 @@ export const Login = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const randomUser = useAppSelector(state => state.app.randomUser)
-    const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)
     const error = useAppSelector(state => state.app.error)
     const isLoading = useAppSelector(state => state.app.isLoading)
-
-    useEffect(() => {
-        dispatch(getUsersTC())
-    }, [])
+    const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)
 
     const formik = useFormik({
         initialValues: {
-            email: randomUser?.email ?? '',
-            password: '',
+            email: 'darrell@gmail.com',
+            password: '123',
         },
-        enableReinitialize: true,
         onSubmit: values => {
             dispatch(loginTC(values))
         }
     });
-
-    // if (isLoggedIn) return (<Navigate to={'/profile'} />)
 
     return (
         <div>
@@ -210,13 +152,10 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<Provider store={store}><BrowserRouter><App/></BrowserRouter></Provider>)
 
 
-// Описание:
-// ❗ Логин вводить не нужно (из-за Api можно вводить только определенные email).
-// Введите любой пароль и попробуйте залогиниться.
-// Если вы увидели alert с успешным сообщением -
-// это значит, что запрос успешно прошел.
+// 📜 Описание:
+// ❗ Email и password менять не надо. Это просто тестовые данные с которыми будет происходить успешный запрос.
+// Нажмите на кнопку "Залогиниться" и вы увидели alert с успешным сообщением
 // Задача: при успешной логинизации, редиректнуть пользователя на страницу Profile.
-// Напишите правильную строку кода
-// Пример ответа:  console.log('If login => redirect to profile')
 
-// неправильно     if (isLoggedIn) return (<Navigate to={'/profile'} />)
+// Напишите правильную строку кода
+// 🖥 Пример ответа:  console.log('If login => redirect to profile')

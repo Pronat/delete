@@ -45,4 +45,4 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: <Route path={'/'} element={'to profile page'}/>
 
-// Пробовать  <Route path={'/'} element={<Navigate to={'profile'}/>}/>
+// неправильно  <Route path={'/'} element={<Navigate to={'profile'}/>}/>

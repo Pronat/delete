@@ -44,7 +44,6 @@ export const Login = () => {
             <div>
                 <input placeholder={'Введите email'}{...formik.getFieldProps('email')}/>
                 {getTrue() && <div style={{color: 'red'}}>ERROR</div>}
-                {/*{formik.errors.email && formik.touched.email && <div style={{color: 'red'}}>{formik.errors.email}</div>}*/}
             </div>
             <button type="submit">Отправить</button>
         </form>
@@ -63,13 +62,15 @@ export const App = () => {
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<BrowserRouter><App/></BrowserRouter>)
 
-// Описание:
+// 📜 Описание:
 // Загрузив приложение вы увидите ошибку под полем email, но вы еще ничего не ввели.
 // Исправьте 46 строку кода так, чтобы:
 // 1) Сообщение об ошибке показывалось только в том случае, когда email введен некорректно.
 // 2) Вместо ERROR должен быть конкретный текст ошибки прописанный в валидации к этому полю.
 // 3) Сообщение должно показываться только в том случае, когда мы взаимодействовали с полем.
 // Исправленную версию строки напишите в качестве ответа.
-// Пример ответа: {true && <div style={{color: 'red'}}>error.email</div>}
 
-// правильно  {formik.errors.email && formik.touched.email && <div style={{color: 'red'}}>{formik.errors.email}</div>}
+// 🖥 Пример ответа: {true && <div style={{color: 'red'}}>error.email</div>}
+
+
+// правильно   {formik.errors.email && formik.touched.email && <div style={{color: 'red'}}>{formik.errors.email}</div>}

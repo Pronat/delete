@@ -60,4 +60,4 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Найдите ошибку и исправленную версию строки напишите в качестве ответа.
 // Пример ответа: alert(JSON.stringify(values));
 
-// пробовать   <form onSubmit={formik.handleSubmit}>
+// правильно   <form onSubmit={formik.handleSubmit}>

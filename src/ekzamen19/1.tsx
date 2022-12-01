@@ -30,4 +30,4 @@ root.render(<App/>)
 // Исправленную версию строки напишите в качестве ответа.
 // Пример ответа: <Route path={'/'} component={<Main/>}/>
 
-//пробовать root.render(<BrowserRouter><App/></BrowserRouter>)
+//правильно root.render(<BrowserRouter><App/></BrowserRouter>)

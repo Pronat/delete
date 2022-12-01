@@ -58,4 +58,4 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Пример ответа: return errors.firstName = 'Must be 5 characters or more'
 // ❗ Сторонние библиотеки (например yup) использовать запрещено
 
-// пробовать   <button type="submit" disabled={!(formik.values.firstName.length > 4)}>Отправить</button>
+// неправильно   <button type="submit" disabled={!(formik.values.firstName.length > 4)}>Отправить</button>

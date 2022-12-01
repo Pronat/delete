@@ -87,4 +87,4 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 // Найдите в коде ошибку. Исправленную версию строки напишите в качестве ответа.
 // Пример ответа:  value={formik.values.phone}
 
-// пробовать   name="phone"
+// правильно   name="phone"
