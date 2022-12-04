@@ -61,6 +61,8 @@ const loginTC = (values: LoginFieldsType): AppThunk => (dispatch) => {
             alert('Вы залогинились успешно')
         })
         .catch((e) => {
+            // dispatch(setError(e.response.data.errors))
+
         })
         .finally(() => {
             dispatch(setLoadingAC(false))
@@ -151,3 +153,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // неправильно  dispatch(setError(e.error))
 //неправильно  alert(e.response.data.error)
 //     (или вместе две строки) - тоже неправильно
+
+// пробовать  dispatch(setError(e.response.data.errors))
