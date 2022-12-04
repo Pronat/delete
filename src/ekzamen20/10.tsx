@@ -114,6 +114,7 @@ export const Login = () => {
             password: '123',
         },
         onSubmit: values => {
+            // if (isLoggedIn) {navigate('/profile')}
             dispatch(loginTC(values))
         }
     });
@@ -159,3 +160,6 @@ root.render(<Provider store={store}><BrowserRouter><App/></BrowserRouter></Provi
 
 // Напишите правильную строку кода
 // 🖥 Пример ответа:  console.log('If login => redirect to profile')
+
+
+// пробовать    if (isLoggedIn) {navigate('/profile')}
