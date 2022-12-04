@@ -146,6 +146,7 @@ const App = () => {
                             <b>title</b>: {p.title}
                             <button style={{marginLeft: '15px'}}
                                     onClick={() => deletePostHandler(p.id)}
+                                    // disabled={p.isDisabled}
                             >
                                 удалить пост
                             </button>
@@ -173,3 +174,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Необходимую строку кода для решения этой задачи напишите в качестве ответа.
 
 // 🖥 Пример ответа: style={{marginRight: '20px'}}
+
+// пробовать  disabled={p.isDisabled}
