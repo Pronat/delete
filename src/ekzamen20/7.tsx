@@ -89,6 +89,7 @@ const getTodosTC = (): AppThunk => (dispatch) => {
     api.getTodos()
         .then((res) => {
             // XXX
+            // baseSuccessHandler(dispatch,getTodosAC,res.data)
         })
         .catch((e: AxiosError) => {
             dispatch(setError(e.message))
@@ -101,6 +102,7 @@ const getUsersTC = (): AppThunk => (dispatch) => {
     api.getUsers()
         .then((res) => {
             // YYY
+            // baseSuccessHandler(dispatch,getUsersAC,res.data.items)
         })
         .catch((e: AxiosError) => {
             dispatch(setError(e.message))
@@ -213,3 +215,5 @@ root.render(<Provider store={store}> <App/></Provider>)
 // Ответ дайте через пробел.
 
 // 🖥 Пример ответа: dispatch(baseSuccessHandler(1,2,3))  dispatch(baseSuccessHandler(3,2,1)
+
+// пробовать   baseSuccessHandler(dispatch,getTodosAC,res.data) baseSuccessHandler(dispatch,getUsersAC,res.data.items)
