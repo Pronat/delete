@@ -28,6 +28,7 @@ export const App = () => {
         <Routes>
             <Route path={'profile'} element={<Profile/>}/>
             {/* ❗❗❗ XXX ❗❗❗  */}
+            {/*<Route path={'*'} element={<Profile/>}/>*/}
         </Routes>
     )
 }
@@ -43,4 +44,4 @@ root.render(<BrowserRouter><App/></BrowserRouter>)
 
 // 🖥 Пример ответа: <Route path={'/'} element={'to profile page'}/>
 
-// неправильно   if (isLoggedIn) return (<Navigate to={'/profile'} />)
+// пробовать   <Route path={'*'} element={<Profile/>}/>
