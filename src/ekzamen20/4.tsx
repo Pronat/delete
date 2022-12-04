@@ -135,3 +135,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 // 🖥 Пример ответа: const payload = {...currentPost, tile: 'Летим 🚀'}
 
 // неправильно  const currentPost = getState().posts.find((p: any) => p.id === postId)
+// пробовать   const currentPost = getState().posts.find((p: PostType) => p.id === postId)

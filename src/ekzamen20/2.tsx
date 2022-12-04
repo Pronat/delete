@@ -90,6 +90,7 @@ const App = () => {
 
     useEffect(() => {
         getTodosTC()
+        // dispatch(getTodosTC())
     }, [])
 
     const changeStatusHandler = (id: string, completed: boolean) => {
@@ -129,4 +130,4 @@ root.render(<Provider store={store}> <App/></Provider>)
 
 // 🖥 Пример ответа: type InitStateType = typeof initState
 
-// неправильно  dispatch(getPostsTC())
+// пробовать  dispatch(getTodosTC())
